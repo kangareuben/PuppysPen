@@ -11,7 +11,7 @@ from gi.repository import Gtk
 
 # pygame
 import pygame
-#from pygame.locals import QUIT, MOUSEBUTTONUP, MOUSEMOTION, VIDEORESIZE, ACTIVEEVENT
+from pygame.locals import QUIT, MOUSEBUTTONUP, MOUSEMOTION, VIDEORESIZE, ACTIVEEVENT
 
 # app
 
@@ -42,6 +42,10 @@ class PuppysPen:
             # Pump GTK events
             while Gtk.events_pending():
                 Gtk.main_iteration()
+
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    self.running = False
 
 # This function is called when the game is run directly from the command line:
 # ./PuppysPen.py
