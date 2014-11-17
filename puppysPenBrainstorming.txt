@@ -1,0 +1,55 @@
+List<int> findFactors(int area)
+{
+	List<int> factors = new List<int>();
+	
+	if(area < 1)
+	{
+		return factors;
+	}
+	
+	factors.push_back(1)
+	
+	for(int i = 2; i <= area / 2; i++)
+	{
+		float potentialFactor = (float)area / (float)i;
+		if(fmod(potentialFactor, 1.0) == 0)
+		{
+			factors.push_back(potentialFactor);
+		}
+	}
+	
+	factors.push_back(area);
+	
+	return factors;
+}
+
+List<int> findPerimetersFromFactors(List<int> factors)
+{
+	List<int> perimeters = new List<int>();
+	
+	int bottom = 0;
+	int top = factors.length - 1;
+	
+	while((top - bottom) > 1)
+	{
+		int bottomValue = factors[bottom];
+		int topValue = factors[top];
+		
+		int perimeter = (2 * bottomValue) + (2 * topValue);
+		perimeters.push_back(perimeter);
+		
+		bottom++;
+		top--;
+	}
+	
+	return perimeters;
+}
+
+List<int> findPerimetersFromArea(int area)
+{
+	List<int> factors = findFactorsFromArea(area);
+	
+	List<int> perimeters = findPerimetersFromFactors(factors);
+	
+	return perimeters;
+}
