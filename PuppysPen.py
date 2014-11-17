@@ -19,25 +19,30 @@ class PuppysPen:
 
     # Runs before the game loop begins
     def __init__(self):
-        pass
-    
+        self.running = True
+
     def draw_rectangle(self, _x, _y, _width, _height):
         pass
-    
+
     def draw_grid(self, _width, _height, _num_rows, _num_columns):
         _row_height = int(height / num_rows)
         _column_width = int(width / num_columns)
-        
+
         for x in range(0, num_columns + 1):
             draw_rectangle(x * _column_width, 0, 1, _height)
-        
+
         for y in range(0, _num_rows + 1):
             draw_rectangle(0, y * _row_height, _width, 1)
-        
+
     # Main game loop
     def run(self):
-        pass
-        
+        # The main game loop.
+        while self.running:
+            
+            # Pump GTK events
+            while Gtk.events_pending():
+                Gtk.main_iteration()
+
 # This function is called when the game is run directly from the command line:
 # ./PuppysPen.py
 def main():
