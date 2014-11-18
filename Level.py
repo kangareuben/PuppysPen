@@ -12,6 +12,7 @@ class Level:
         
         if _perimeter_level == _area_level == False:
             # Throw exception
+            raise ValueError("Level type has to be either perimeter, area, or both, not neither")
         elif _area_level == False:
             self.generate_perimeter_level()
         elif _perimeter_level == False:
