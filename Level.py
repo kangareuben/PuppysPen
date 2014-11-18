@@ -9,16 +9,17 @@ class Level:
         self.perimeter_level = _perimeter_level
         self.area_level = _area_level
         self.grid_size = _grid_size
+        self.level = None
         
         if _perimeter_level == _area_level == False:
             # Throw exception
             raise ValueError("Level type has to be either perimeter, area, or both, not neither")
         elif _area_level == False:
-            self.generate_perimeter_level()
+            self.level = self.generate_perimeter_level()
         elif _perimeter_level == False:
-            self.generate_area_level()
+            self.level = self.generate_area_level()
         else:
-            self.generate_both_level()
+            self.level = self.generate_both_level()
     
     # Generates a random perimeter for this puzzle
     def generate_perimeter_level(self):
@@ -47,8 +48,8 @@ class Level:
         
     # Generates a compatible set of perimeter and area for this puzzle
     def generate_both_level(self):
-        _area = generate_area_level()
-        _perimeters = find_perimeters_from_area(_area)
+        _area = self.generate_area_level()
+        _perimeters = self.find_perimeters_from_area(_area)
         
         # Get a random index within the number of possible perimeters
         _random_index = random.randrange(len(_perimeters))
@@ -69,7 +70,7 @@ class Level:
         
         # Find factors between 2 and area/2 (inclusive)
         for x in range(2, _area / 2 + 1):
-            _potential_factor = float(area) / float(x)
+            _potential_factor = float(_area) / float(x)
             if _potential_factor % 1 == 0:
                 _factors.append(_potential_factor)
         
@@ -84,7 +85,7 @@ class Level:
                 _factors.remove(_area / _factors[x])
                 
                 # Deleted two factors, so have to decrement x to compensate
-                x--
+                x-=1
                 
             # Reaching a factor that isn't too big means removal is done,
             # as you're looping through highest to lowest
@@ -111,14 +112,14 @@ class Level:
             _perimeters.append(_perimeter)
             
             # Next pair
-            _bottom++
-            _top--
+            _bottom+=1
+            _top-=1
         
         return _perimeters
     
     # Find all possible perimeters given an area
     def find_perimeters_from_area(self, _area):
-        _factors = find_factors_from_area(_area)
-        _perimeters = find_perimeters_from_factors(_factors)
+        _factors = self.find_factors_from_area(_area)
+        _perimeters = self.find_perimeters_from_factors(_factors)
         
         return _perimeters
