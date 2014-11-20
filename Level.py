@@ -35,8 +35,8 @@ class Level:
         
         # Check all possible combinations of width and height
         # Only add products greater than 3, and only add them once
-        for x in range(1, self.grid_size[0]):
-            for y in range(1, self.grid_size[1]):
+        for x in range(1, self.grid_size[0] + 1):
+            for y in range(1, self.grid_size[1] + 1):
                 _product = x * y
                 if _product > 3 and _product not in _possible_areas:
                     _possible_areas.append(_product)
@@ -60,37 +60,31 @@ class Level:
         
     # Find all possible factors given an area
     def find_factors_from_area(self, _area):
-        _factors = []
+        _potential_factors = []
         
         if(_area < 1):
-            return _factors
+            return _potential_factors
         
         # 1 is always a factor
-        _factors.append(1)
+        _potential_factors.append(1)
         
         # Find factors between 2 and area/2 (inclusive)
         for x in range(2, _area / 2 + 1):
             _potential_factor = float(_area) / float(x)
             if _potential_factor % 1 == 0:
-                _factors.append(_potential_factor)
+                _potential_factors.append(_potential_factor)
         
         # The only factor that can be above area/2 is area itself
-        _factors.append(_area)
+        _potential_factors.append(_area)
         
-        # Remove factors that won't fit on the grid
-        # Loop backward to avoid deletion errors
-        for x in range(len(_factors) - 1, -1, -1):
-            if _factors[x] > self.grid_size[0] and _factors[x] > self.grid_size[1]:
-                _factors.remove(_factors[x])
-                _factors.remove(_area / _factors[x])
-                
-                # Deleted two factors, so have to decrement x to compensate
-                x-=1
-                
-            # Reaching a factor that isn't too big means removal is done,
-            # as you're looping through highest to lowest
-            else:
-                break
+        _factors = []
+        # Only add factors that fit on the screen to the list of factors
+        # Only loop through half the list, but add tuples of factors as you go
+        for x in range(int(len(_potential_factors) / 2 + 1)):
+            if not ((_potential_factors[x] > self.grid_size[0] and _potential_factors[x] > self.grid_size[1]) or
+                    (_potential_factors[len(_potential_factors) - x - 1] > self.grid_size[0] and 
+                    _potential_factors[len(_potential_factors) - x - 1] > self.grid_size[1])):
+                _factors.append((_potential_factors[x], _potential_factors[len(_potential_factors) - x - 1]))
         
         return _factors
     
@@ -98,22 +92,9 @@ class Level:
     def find_perimeters_from_factors(self, _factors):
         _perimeters = []
         
-        # Pairs are (0, length-1), (1, length-2), etc.
-        _bottom = 0
-        _top = len(_factors) - 1
-        
-        while (_top - _bottom) > 1:
-            # Get pair of corresponding values
-            _bottom_value = _factors[_bottom]
-            _top_value = _factors[_top]
-            
-            # Perimeter formula
-            _perimeter = (2 * _bottom_value) + (2 * _top_value)
-            _perimeters.append(_perimeter)
-            
-            # Next pair
-            _bottom+=1
-            _top-=1
+        # Pairs are tuples in order
+        for x in range(len(_factors)):
+            _perimeters.append(2 * _factors[x][0] + 2 * _factors[x][1])
         
         return _perimeters
     

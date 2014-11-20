@@ -5,10 +5,10 @@ try:
 except:
 	pass
 
-# perimeter_level = Level(1, True)
-# area_level = Level(1, False, True)
+perimeter_level = Level(1, True)
+area_level = Level(1, False, True)
 both_level = Level(1, True, True)
 
-# print perimeter_level.level
-# print area_level.level
+print perimeter_level.level
+print area_level.level
 print both_level.level
