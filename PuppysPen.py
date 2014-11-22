@@ -39,7 +39,6 @@ class PuppysPen:
     def run(self):
         # The main game loop.
         while self.running:
-            
             # Pump GTK events
             while Gtk.events_pending():
                 Gtk.main_iteration()
