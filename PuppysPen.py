@@ -28,11 +28,18 @@ class PuppysPen:
         self.py_screen = _py_screen
 
         self.grid_offset = (100, 100)
+        self.grid_width = 200
+        self.grid_height = 200
+        self.num_rows = 5
+        self.num_columns = 5
+        self.row_height = self.grid_height / self.num_rows
+        self.column_width = self.grid_width / self.num_columns
+        
         self.mouse_grid_position = (0, 0)
         self.mouse_prev_grid_position = (0, 0)
         self.rect_origin = (0, 0)
         self.drawing_rect = False
-        self.draw_grid(self.grid_offset[0], self.grid_offset[1], 200, 200, 5, 5)
+        self.draw_grid(self.grid_offset[0], self.grid_offset[1], self.grid_width, self.grid_height, self.num_rows, self.num_columns)
 
     def draw_rectangle(self, _x, _y, _width, _height):
         pygame.draw.rect(self.py_screen, (255,255,255), (_x,_y,_width,_height), 1)
@@ -77,6 +84,24 @@ class PuppysPen:
                 if event.type == MOUSEMOTION:
                     # Update mouse_grid_position based on current mouse position
                     pos = pygame.mouse.get_pos()
+                    gridpos = (pos[0] - self.grid_offset[0]), pos[1] - self.grid_offset[1])
+                    
+                    if gridpos[0] <= 0 and gridpos[1] <= 0:
+                        self.mouse_grid_position = (0, 0)
+                    
+                    elif gridpos[0] > 0 and gridpos[1] > 0:
+                        grid_x = round(gridpos[0] / self.column_width)
+                        grid_y = round(gridpos[1] / self.row_height)
+                        self.mouse_grid_position = (grid_x, grid_y)
+                    
+                    elif gridpos[0] < 0:
+                        grid_y = round(gridpos[1] / self.row_height)
+                        self.mouse_grid_position = (0, grid_y)
+                        
+                    elif gridpos[1] < 0:
+                        grid_x = round(gridpos[0] / self.column_width)
+                        self.mouse_grip_position = (grid_x, 0)
+                    
                     # TODO: Empty mousemove handler at the moment
                     self.screen.mousemove(pos)
 
