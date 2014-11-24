@@ -16,6 +16,7 @@ import pygame
 from pygame.locals import QUIT, MOUSEBUTTONUP, MOUSEMOTION, VIDEORESIZE, ACTIVEEVENT
 
 # app
+import Constants
 
 class PuppysPen:
 
@@ -27,12 +28,20 @@ class PuppysPen:
         self.clicked = None # the ID of the object that was clicked
         self.py_screen = _py_screen
 
-        self.grid_offset = (100, 100)
+        self.grid_offset = self.center_coords(600, 400)
         self.mouse_grid_position = (0, 0)
         self.mouse_prev_grid_position = (0, 0)
         self.rect_origin = (0, 0)
         self.drawing_rect = False
-        self.draw_grid(self.grid_offset[0], self.grid_offset[1], 200, 200, 5, 5)
+        # grass green
+        self.py_screen.fill((84,171,71))
+        self.draw_grid(self.grid_offset[0], self.grid_offset[1], 600, 400, 6, 6)
+
+    def center_coords(self, _w, _h):
+        x_padding = int((Constants.WIDTH - _w) / 2.0)
+        y_padding = int((Constants.HEIGHT - _h) / 2.0)
+        print("center_coords", x_padding, y_padding)
+        return (x_padding, y_padding)
 
     def draw_rectangle(self, _x, _y, _width, _height):
         pygame.draw.rect(self.py_screen, (255,255,255), (_x,_y,_width,_height), 1)
@@ -59,8 +68,8 @@ class PuppysPen:
 
     # Main game loop
     def run(self):
-        self.main_screen = MainScreen()
-        self.play_screen = GameScreen()
+        self.main_screen = MainScreen(self.py_screen)
+        self.play_screen = GameScreen(self.py_screen)
 
         # set the initial screen
         self.screen = self.main_screen
@@ -112,8 +121,7 @@ class PuppysPen:
 
 class Screen(object):
     def __init__(self):
-        self.display = pygame.display
-        self.window = pygame.display.get_surface()
+        pass
 
     def click(self, pos):
         """ Default click event handler """
@@ -124,18 +132,20 @@ class Screen(object):
         print(pos)
 
 class MainScreen(Screen):
-    def __init__(self):
+    def __init__(self, _py_screen):
         super(MainScreen, self).__init__()
+        self.py_screen = _py_screen
 
 class GameScreen(Screen):
-    def __init__(self):
+    def __init__(self, _py_screen):
         super(GameScreen, self).__init__()
 
 # This function is called when the game is run directly from the command line:
 # ./PuppysPen.py
 def main():
     pygame.init()
-    py_screen = pygame.display.set_mode((1200, 900 - 54), pygame.RESIZABLE) # 54 = height of sugar toolbar
+    py_screen = pygame.display.set_mode((Constants.WIDTH, Constants.HEIGHT), \
+            pygame.RESIZABLE) # 54 = height of sugar toolbar
     game = PuppysPen(py_screen)
     game.run()
 
