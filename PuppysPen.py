@@ -25,6 +25,12 @@ class PuppysPen:
         self.clock = pygame.time.Clock() # controls the frame rate
         self.forceAll = True # force an entire repaint of the screen on the next frame
         self.clicked = None # the ID of the object that was clicked
+        self.py_screen = _py_screen
+
+        self.mouse_grid_position = (0, 0)
+        self.mouse_prev_grid_position = (0, 0)
+        self.rect_origin = (0, 0)
+        self.drawing_rect = False
 
     def draw_rectangle(self, _x, _y, _width, _height):
         pass
@@ -39,6 +45,16 @@ class PuppysPen:
         for y in range(0, _num_rows + 1):
             draw_rectangle(0, y * _row_height, _width, 1)
 
+    def begin_user_rectangle(self):
+        self.drawing_rect = True
+        self.rect_origin = mouse_grid_position
+        
+    def finish_user_rectangle(self):
+        self.drawing_rect = False
+        
+        # Calculate perimeter and area of user-drawn rectangle
+        # and compare it to the level criteria
+    
     # Main game loop
     def run(self):
         self.main_screen = MainScreen()
@@ -55,7 +71,31 @@ class PuppysPen:
                 Gtk.main_iteration()
 
             for event in pygame.event.get():
-                if event.type == QUIT:
+                if event.type == MOUSEMOTION:
+                    # Update mouse_grid_position based on current mouse position
+                    
+                    # If mouse_grid position and mouse_prev_grid_position are different
+                    if self.mouse_grid_position != self.mouse_prev_grid_position:
+                        if not self.drawing_rect:
+                            # Update the position of the yellow dot
+                            pass
+
+                        else:
+                            # Update the position of the yellow rectangle
+                            pass
+                            
+                        self.mouse_prev_grid_position = self.mouse_grid_position
+                
+                elif event.type == MOUSEBUTTONUP:
+                    if not self.drawing_rect:
+                        # Start drawing rectangle
+                        self.begin_user_rectangle()
+                    
+                    else:
+                        # Finish drawing rectangle
+                        self.finish_user_rectangle()
+                    
+                elif event.type == QUIT:
                     self.running = False
 
                 elif event.type == MOUSEBUTTONUP and \
@@ -77,7 +117,7 @@ class Screen(object):
         print(pos)
 
     def mousemove(self, pos):
-        """ Default mousemove  event handler """
+        """ Default mousemove event handler """
         print(pos)
 
 class MainScreen(Screen):
