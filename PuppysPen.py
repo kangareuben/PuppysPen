@@ -1,6 +1,8 @@
 #!/usr/bin/python
 '''
 Primary pygame file. Deals with all the stuff.
+
+Application structure taken from brendanwhitfield/planetary
 '''
 
 # python
@@ -18,9 +20,11 @@ from pygame.locals import QUIT, MOUSEBUTTONUP, MOUSEMOTION, VIDEORESIZE, ACTIVEE
 class PuppysPen:
 
     # Runs before the game loop begins
-    def __init__(self, _screen):
-        self.running = True
-        self.screen = _screen;
+    def __init__(self, _py_screen):
+        self.running = True # controls the exit of the game loop
+        self.clock = pygame.time.Clock() # controls the frame rate
+        self.forceAll = True # force an entire repaint of the screen on the next frame
+        self.clicked = None # the ID of the object that was clicked
 
     def draw_rectangle(self, _x, _y, _width, _height):
         pass
@@ -37,8 +41,15 @@ class PuppysPen:
 
     # Main game loop
     def run(self):
+        self.main_screen = MainScreen()
+        self.play_screen = GameScreen()
+
+        # set the initial screen
+        self.screen = self.main_screen
+
         # The main game loop.
         while self.running:
+
             # Pump GTK events
             while Gtk.events_pending():
                 Gtk.main_iteration()
@@ -47,13 +58,42 @@ class PuppysPen:
                 if event.type == QUIT:
                     self.running = False
 
+                elif event.type == MOUSEBUTTONUP and \
+                        (event.button == 1 or event.button == 3):
+                    pos = pygame.mouse.get_pos()
+                    self.clicked = self.screen.click(pos)
+
+                elif event.type == MOUSEMOTION:
+                    pos = pygame.mouse.get_pos()
+                    self.screen.mousemove(pos)
+
+class Screen(object):
+    def __init__(self):
+        self.display = pygame.display
+        self.window = pygame.display.get_surface()
+
+    def click(self, pos):
+        """ Default click event handler """
+        print(pos)
+
+    def mousemove(self, pos):
+        """ Default mousemove  event handler """
+        print(pos)
+
+class MainScreen(Screen):
+    def __init__(self):
+        super(MainScreen, self).__init__()
+
+class GameScreen(Screen):
+    def __init__(self):
+        super(GameScreen, self).__init__()
+
 # This function is called when the game is run directly from the command line:
 # ./PuppysPen.py
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((1200, 900 - 54), pygame.RESIZABLE) # 54 = height of sugar toolbar
-    screen.fill((255,255,255))
-    game = PuppysPen(screen)
+    py_screen = pygame.display.set_mode((1200, 900 - 54), pygame.RESIZABLE) # 54 = height of sugar toolbar
+    game = PuppysPen(py_screen)
     game.run()
 
 if __name__ == '__main__':
