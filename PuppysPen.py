@@ -48,13 +48,13 @@ class PuppysPen:
     def begin_user_rectangle(self):
         self.drawing_rect = True
         self.rect_origin = mouse_grid_position
-        
+
     def finish_user_rectangle(self):
         self.drawing_rect = False
-        
+
         # Calculate perimeter and area of user-drawn rectangle
         # and compare it to the level criteria
-    
+
     # Main game loop
     def run(self):
         self.main_screen = MainScreen()
@@ -73,7 +73,10 @@ class PuppysPen:
             for event in pygame.event.get():
                 if event.type == MOUSEMOTION:
                     # Update mouse_grid_position based on current mouse position
-                    
+                    pos = pygame.mouse.get_pos()
+                    # TODO: Empty mousemove handler at the moment
+                    self.screen.mousemove(pos)
+
                     # If mouse_grid position and mouse_prev_grid_position are different
                     if self.mouse_grid_position != self.mouse_prev_grid_position:
                         if not self.drawing_rect:
@@ -83,29 +86,26 @@ class PuppysPen:
                         else:
                             # Update the position of the yellow rectangle
                             pass
-                            
+
                         self.mouse_prev_grid_position = self.mouse_grid_position
-                
+
                 elif event.type == MOUSEBUTTONUP:
-                    if not self.drawing_rect:
-                        # Start drawing rectangle
-                        self.begin_user_rectangle()
-                    
+                    if event.button == 1 or event.button == 3:
+                        pos = pygame.mouse.get_pos()
+                        self.clicked = self.screen.click(pos)
+
+                        # TODO: throw this in click event handler, only for the
+                        # GameScreen
+                        if not self.drawing_rect:
+                            # Start drawing rectangle
+                            self.begin_user_rectangle()
+
                     else:
                         # Finish drawing rectangle
                         self.finish_user_rectangle()
-                    
+
                 elif event.type == QUIT:
                     self.running = False
-
-                elif event.type == MOUSEBUTTONUP and \
-                        (event.button == 1 or event.button == 3):
-                    pos = pygame.mouse.get_pos()
-                    self.clicked = self.screen.click(pos)
-
-                elif event.type == MOUSEMOTION:
-                    pos = pygame.mouse.get_pos()
-                    self.screen.mousemove(pos)
 
 class Screen(object):
     def __init__(self):
