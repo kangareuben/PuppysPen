@@ -27,24 +27,25 @@ class PuppysPen:
         self.clicked = None # the ID of the object that was clicked
         self.py_screen = _py_screen
 
+        self.grid_offset = (100, 100)
         self.mouse_grid_position = (0, 0)
         self.mouse_prev_grid_position = (0, 0)
         self.rect_origin = (0, 0)
         self.drawing_rect = False
-        self.draw_grid(200, 200, 5, 5)
+        self.draw_grid(self.grid_offset[0], self.grid_offset[1], 200, 200, 5, 5)
 
     def draw_rectangle(self, _x, _y, _width, _height):
         pygame.draw.rect(self.py_screen, (255,255,255), (_x,_y,_width,_height), 1)
 
-    def draw_grid(self, _width, _height, _num_rows, _num_columns):
+    def draw_grid(self, _x, _y, _width, _height, _num_rows, _num_columns):
         _row_height = int(_height / _num_rows)
         _column_width = int(_width / _num_columns)
 
-        for x in range(0, _num_columns + 1):
-            self.draw_rectangle(x * _column_width, 0, 1, _height)
+        for i in range(0, _num_columns + 1):
+            self.draw_rectangle(i * _column_width + _x, _y, 1, _height)
 
-        for y in range(0, _num_rows + 1):
-            self.draw_rectangle(0, y * _row_height, _width, 1)
+        for j in range(0, _num_rows + 1):
+            self.draw_rectangle(_x, j * _row_height + _y, _width, 1)
 
     def begin_user_rectangle(self):
         self.drawing_rect = True
@@ -70,6 +71,7 @@ class PuppysPen:
             # Pump GTK events
             while Gtk.events_pending():
                 Gtk.main_iteration()
+                pygame.display.update()
 
             for event in pygame.event.get():
                 if event.type == MOUSEMOTION:
