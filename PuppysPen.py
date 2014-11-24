@@ -31,23 +31,24 @@ class PuppysPen:
         self.mouse_prev_grid_position = (0, 0)
         self.rect_origin = (0, 0)
         self.drawing_rect = False
+        self.draw_grid(200, 200, 5, 5)
 
     def draw_rectangle(self, _x, _y, _width, _height):
-        pass
+        pygame.draw.rect(self.py_screen, (255,255,255), (_x,_y,_width,_height), 1)
 
     def draw_grid(self, _width, _height, _num_rows, _num_columns):
         _row_height = int(_height / _num_rows)
         _column_width = int(_width / _num_columns)
 
         for x in range(0, _num_columns + 1):
-            draw_rectangle(x * _column_width, 0, 1, _height)
+            self.draw_rectangle(x * _column_width, 0, 1, _height)
 
         for y in range(0, _num_rows + 1):
-            draw_rectangle(0, y * _row_height, _width, 1)
+            self.draw_rectangle(0, y * _row_height, _width, 1)
 
     def begin_user_rectangle(self):
         self.drawing_rect = True
-        self.rect_origin = mouse_grid_position
+        self.rect_origin = self.mouse_grid_position
 
     def finish_user_rectangle(self):
         self.drawing_rect = False
