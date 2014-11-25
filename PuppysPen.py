@@ -24,15 +24,15 @@ class PuppysPen:
     def __init__(self, _py_screen):
         self.running = True # controls the exit of the game loop
         self.clock = pygame.time.Clock() # controls the frame rate
-        self.forceAll = True # force an entire repaint of the screen on the next frame
+        self.forceAll = False # force an entire repaint of the screen on the next frame
         self.clicked = None # the ID of the object that was clicked
         self.py_screen = _py_screen
 
         self.grid_offset = self.center_coords(600, 400)
-        self.grid_width = 200
-        self.grid_height = 200
-        self.num_rows = 5
-        self.num_columns = 5
+        self.grid_width = 600
+        self.grid_height = 400
+        self.num_rows = 6
+        self.num_columns = 6
         self.row_height = self.grid_height / self.num_rows
         self.column_width = self.grid_width / self.num_columns
         
@@ -43,7 +43,7 @@ class PuppysPen:
 
         # grass green
         self.py_screen.fill((84,171,71))
-        self.draw_grid(self.grid_offset[0], self.grid_offset[1], 600, 400, 6, 6)
+        self.draw_grid(self.grid_offset[0], self.grid_offset[1], self.grid_width, self.grid_height, self.num_rows, self.num_columns)
 
     def center_coords(self, _w, _h):
         x_padding = int((Constants.WIDTH - _w) / 2.0)
@@ -70,6 +70,17 @@ class PuppysPen:
 
     def finish_user_rectangle(self):
         self.drawing_rect = False
+        
+        origin_x = int(self.grid_offset[0] + (self.rect_origin[0] * self.column_width))
+        origin_y = int(self.grid_offset[1] + (self.rect_origin[1] * self.row_height))
+        
+        x_pos = int(self.grid_offset[0] + (self.mouse_grid_position[0] * self.column_width))
+        y_pos = int(self.grid_offset[1] + (self.mouse_grid_position[1] * self.row_height))
+        
+        width = x_pos - origin_x
+        height = y_pos - origin_y
+        
+        pygame.draw.rect(self.py_screen, (255, 0, 0), (origin_x, origin_y, width, height), 3)
 
         # Calculate perimeter and area of user-drawn rectangle
         # and compare it to the level criteria
@@ -94,7 +105,7 @@ class PuppysPen:
                 if event.type == MOUSEMOTION:
                     # Update mouse_grid_position based on current mouse position
                     pos = pygame.mouse.get_pos()
-                    gridpos = (pos[0] - self.grid_offset[0]), pos[1] - self.grid_offset[1])
+                    gridpos = (pos[0] - self.grid_offset[0], pos[1] - self.grid_offset[1])
                     
                     if gridpos[0] <= 0 and gridpos[1] <= 0:
                         self.mouse_grid_position = (0, 0)
@@ -110,7 +121,7 @@ class PuppysPen:
                         
                     elif gridpos[1] < 0:
                         grid_x = round(gridpos[0] / self.column_width)
-                        self.mouse_grip_position = (grid_x, 0)
+                        self.mouse_grid_position = (grid_x, 0)
                     
                     # TODO: Empty mousemove handler at the moment
                     self.screen.mousemove(pos)
@@ -119,7 +130,9 @@ class PuppysPen:
                     if self.mouse_grid_position != self.mouse_prev_grid_position:
                         if not self.drawing_rect:
                             # Update the position of the yellow dot
-                            pass
+                            x_pos = int(self.grid_offset[0] + (self.mouse_grid_position[0] * self.column_width))
+                            y_pos = int(self.grid_offset[1] + (self.mouse_grid_position[1] * self.row_height))
+                            pygame.draw.circle(self.py_screen, (255, 255, 0), (x_pos, y_pos), 10)
 
                         else:
                             # Update the position of the yellow rectangle
@@ -138,12 +151,14 @@ class PuppysPen:
                             # Start drawing rectangle
                             self.begin_user_rectangle()
 
-                    else:
-                        # Finish drawing rectangle
-                        self.finish_user_rectangle()
+                        else:
+                            # Finish drawing rectangle
+                            self.finish_user_rectangle()
 
                 elif event.type == QUIT:
                     self.running = False
+            
+            self.clock.tick(30)
 
 class Screen(object):
     def __init__(self):
