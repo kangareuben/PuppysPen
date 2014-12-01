@@ -36,6 +36,7 @@ class PuppysPen:
         self.num_columns = 6
         self.row_height = self.grid_height / self.num_rows
         self.column_width = self.grid_width / self.num_columns
+        #print(self.row_height, self.column_width)
         
         self.font = pygame.font.Font(None, 36)
         self.instruction_text = self.font.render("Click once to start a rectangle, and again to finish it", True, (0, 0, 0))
@@ -100,6 +101,53 @@ class PuppysPen:
         # Calculate perimeter and area of user-drawn rectangle
         # and compare it to the level criteria
 
+    def get_offset_mouse(self):
+        """ Returns a tuple (x,y) offset based on self.grid_offset """
+        pos = pygame.mouse.get_pos()
+        #print(self.grid_offset)
+        #print(gridpos)
+        return (pos[0] - self.grid_offset[0], pos[1] - self.grid_offset[1])
+
+    def get_grid_mouse(self, pos):
+        mouse_x, mouse_y = pos
+
+        if mouse_x <= 0 and mouse_y <= 0:
+            mouse_grid_position = (0, 0)
+        
+        elif mouse_x > 0 and mouse_y > 0:
+            grid_x = round(mouse_x / float(self.column_width))
+            grid_y = round(mouse_y / float(self.row_height))
+            mouse_grid_position = (grid_x, grid_y)
+            print(mouse_x / float(self.column_width), mouse_y / float(self.row_height))
+            print(mouse_grid_position)
+
+            if grid_x > self.num_columns:
+                if grid_y > self.num_rows:
+                    mouse_grid_position = (self.num_columns, self.num_rows)
+                else:
+                    mouse_grid_position = (self.num_columns, mouse_grid_position[1])
+
+            if grid_y > self.num_rows:
+                mouse_grid_position = (mouse_grid_position[0], self.num_rows)
+        
+        elif mouse_x <= 0:
+            grid_y = round(mouse_y / self.row_height)
+            
+            if grid_y > self.num_rows:
+                grid_y = self.num_rows
+            
+            mouse_grid_position = (0, grid_y)
+            
+        elif mouse_y <= 0:
+            grid_x = round(mouse_x / self.column_width)
+            
+            if grid_x > self.num_columns:
+                grid_x = self.num_columns
+
+            mouse_grid_position = (grid_x, 0)
+
+        return mouse_grid_position
+
     # Main game loop
     def run(self):
         self.main_screen = MainScreen(self.py_screen)
@@ -124,40 +172,22 @@ class PuppysPen:
 
             for event in pygame.event.get():
                 if event.type == MOUSEMOTION:
+                    # Update mouse origin to grid position
+                    mouse_x, mouse_y = self.get_offset_mouse()
+
                     # Update mouse_grid_position based on current mouse position
-                    pos = pygame.mouse.get_pos()
-                    gridpos = (pos[0] - self.grid_offset[0], pos[1] - self.grid_offset[1])
-                    
-                    if gridpos[0] <= 0 and gridpos[1] <= 0:
-                        self.mouse_grid_position = (0, 0)
-                    
-                    elif gridpos[0] > 0 and gridpos[1] > 0:
-                        grid_x = round(gridpos[0] / self.column_width)
-                        grid_y = round(gridpos[1] / self.row_height)
-                        self.mouse_grid_position = (grid_x, grid_y)
-                        if self.mouse_grid_position[0] >= self.num_columns:
-                            if self.mouse_grid_position[1] >= self.num_rows:
-                                self.mouse_grid_position = (self.num_columns - 1, self.num_rows - 1)
-                        if self.mouse_grid_position[1] >= self.num_rows:
-                            self.mouse_grid_position = (self.mouse_grid_position[0], self.num_rows - 1)
-                    
-                    elif gridpos[0] <= 0:
-                        grid_y = round(gridpos[1] / self.row_height)
-                        self.mouse_grid_position = (0, grid_y)
-                        
-                    elif gridpos[1] <= 0:
-                        grid_x = round(gridpos[0] / self.column_width)
-                        self.mouse_grid_position = (grid_x, 0)
-                    
+                    mouse_grid_x, mouse_grid_y = self.get_grid_mouse((mouse_x, mouse_y))
+                    self.mouse_grid_position = (mouse_grid_x, mouse_grid_y)
+
                     # TODO: Empty mousemove handler at the moment
-                    self.screen.mousemove(pos)
+                    #self.screen.mousemove(pos)
 
                     # If mouse_grid position and mouse_prev_grid_position are different
-                    if self.mouse_grid_position != self.mouse_prev_grid_position:
+                    if (mouse_grid_x, mouse_grid_y) != self.mouse_prev_grid_position:
                         if not self.drawing_rect:
                             # Update the position of the yellow dot
-                            x_pos = int(self.grid_offset[0] + (self.mouse_grid_position[0] * self.column_width))
-                            y_pos = int(self.grid_offset[1] + (self.mouse_grid_position[1] * self.row_height))
+                            x_pos = int(self.grid_offset[0] + (mouse_grid_x * self.column_width))
+                            y_pos = int(self.grid_offset[1] + (mouse_grid_y * self.row_height))
                             pygame.draw.circle(self.py_screen, (255, 255, 0), (x_pos, y_pos), 10)
 
                         else:
@@ -168,8 +198,8 @@ class PuppysPen:
 
                 elif event.type == MOUSEBUTTONUP:
                     if event.button == 1 or event.button == 3:
-                        pos = pygame.mouse.get_pos()
-                        self.clicked = self.screen.click(pos)
+                        #pos = pygame.mouse.get_pos()
+                        #self.clicked = self.screen.click(pos)
 
                         # TODO: throw this in click event handler, only for the
                         # GameScreen
@@ -191,11 +221,13 @@ class Screen(object):
 
     def click(self, pos):
         """ Default click event handler """
-        print(pos)
+        #print(pos)
+        pass
 
     def mousemove(self, pos):
         """ Default mousemove event handler """
-        print(pos)
+        #print(pos)
+        pass
 
 class MainScreen(Screen):
     def __init__(self, _py_screen):
