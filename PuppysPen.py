@@ -17,6 +17,7 @@ from pygame.locals import QUIT, MOUSEBUTTONUP, MOUSEMOTION, VIDEORESIZE, ACTIVEE
 
 # app
 import Constants
+from Level import Level
 
 class PuppysPen:
 
@@ -40,7 +41,14 @@ class PuppysPen:
         self.instruction_text = self.font.render("Click once to start a rectangle, and again to finish it", True, (0, 0, 0))
         self.instruction_text_pos = self.instruction_text.get_rect()
         self.instruction_text_pos.centerx = self.py_screen.get_rect().centerx
-        self.instruction_text_pos.centery = self.py_screen.get_rect().centery + 300
+        self.instruction_text_pos.centery = self.py_screen.get_rect().centery + 350
+        
+        self.level = Level(0, True)
+        self.perimeter = self.level.level
+        self.level_text = self.font.render("Make a rectangle with perimeter " + str(self.perimeter), True, (0, 0, 0))
+        self.level_text_pos = self.instruction_text.get_rect()
+        self.level_text_pos.centerx = self.py_screen.get_rect().centerx
+        self.level_text_pos.centery = self.py_screen.get_rect().centery + 300
         
         self.mouse_grid_position = (0, 0)
         self.mouse_prev_grid_position = (0, 0)
@@ -49,6 +57,7 @@ class PuppysPen:
 
         # grass green
         self.py_screen.fill((84,171,71))
+        self.py_screen.blit(self.level_text, self.level_text_pos)
         self.py_screen.blit(self.instruction_text, self.instruction_text_pos)
         self.draw_grid(self.grid_offset[0], self.grid_offset[1], self.grid_width, self.grid_height, self.num_rows, self.num_columns)
 
