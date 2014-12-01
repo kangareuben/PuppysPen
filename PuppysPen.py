@@ -41,14 +41,13 @@ class PuppysPen:
         self.instruction_text = self.font.render("Click once to start a rectangle, and again to finish it", True, (0, 0, 0))
         self.instruction_text_pos = self.instruction_text.get_rect()
         self.instruction_text_pos.centerx = self.py_screen.get_rect().centerx
-        self.instruction_text_pos.centery = self.py_screen.get_rect().centery + 350
         
         self.level = Level(0, True)
         self.perimeter = self.level.level
         self.level_text = self.font.render("Make a rectangle with perimeter " + str(self.perimeter), True, (0, 0, 0))
         self.level_text_pos = self.instruction_text.get_rect()
         self.level_text_pos.centerx = self.py_screen.get_rect().centerx
-        self.level_text_pos.centery = self.py_screen.get_rect().centery + 300
+        self.level_text_pos.centery = self.py_screen.get_rect().centery - 300
         
         self.mouse_grid_position = (0, 0)
         self.mouse_prev_grid_position = (0, 0)
@@ -119,7 +118,9 @@ class PuppysPen:
             # Pump GTK events
             while Gtk.events_pending():
                 Gtk.main_iteration()
-                pygame.display.update()
+
+            pygame.display.update()
+            self.clock.tick(30)
 
             for event in pygame.event.get():
                 if event.type == MOUSEMOTION:
@@ -183,7 +184,6 @@ class PuppysPen:
                 elif event.type == QUIT:
                     self.running = False
             
-            self.clock.tick(30)
 
 class Screen(object):
     def __init__(self):
