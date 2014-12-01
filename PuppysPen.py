@@ -36,6 +36,12 @@ class PuppysPen:
         self.row_height = self.grid_height / self.num_rows
         self.column_width = self.grid_width / self.num_columns
         
+        self.font = pygame.font.Font(None, 36)
+        self.instruction_text = self.font.render("Click once to start a rectangle, and again to finish it", True, (0, 0, 0))
+        self.instruction_text_pos = self.instruction_text.get_rect()
+        self.instruction_text_pos.centerx = self.py_screen.get_rect().centerx
+        self.instruction_text_pos.centery = self.py_screen.get_rect().centery + 300
+        
         self.mouse_grid_position = (0, 0)
         self.mouse_prev_grid_position = (0, 0)
         self.rect_origin = (0, 0)
@@ -43,6 +49,7 @@ class PuppysPen:
 
         # grass green
         self.py_screen.fill((84,171,71))
+        self.py_screen.blit(self.instruction_text, self.instruction_text_pos)
         self.draw_grid(self.grid_offset[0], self.grid_offset[1], self.grid_width, self.grid_height, self.num_rows, self.num_columns)
 
     def center_coords(self, _w, _h):
@@ -95,6 +102,10 @@ class PuppysPen:
 
         # The main game loop.
         while self.running:
+            
+        # Should we be using the blit() method to draw things to the screen each frame?
+        # If so, this seems like a good tutorial
+        # https://www.pygame.org/docs/tut/tom/games2.html
 
             # Pump GTK events
             while Gtk.events_pending():
@@ -114,12 +125,17 @@ class PuppysPen:
                         grid_x = round(gridpos[0] / self.column_width)
                         grid_y = round(gridpos[1] / self.row_height)
                         self.mouse_grid_position = (grid_x, grid_y)
+                        if self.mouse_grid_position[0] >= self.num_columns:
+                            if self.mouse_grid_position[1] >= self.num_rows:
+                                self.mouse_grid_position = (self.num_columns - 1, self.num_rows - 1)
+                        if self.mouse_grid_position[1] >= self.num_rows:
+                            self.mouse_grid_position = (self.mouse_grid_position[0], self.num_rows - 1)
                     
-                    elif gridpos[0] < 0:
+                    elif gridpos[0] <= 0:
                         grid_y = round(gridpos[1] / self.row_height)
                         self.mouse_grid_position = (0, grid_y)
                         
-                    elif gridpos[1] < 0:
+                    elif gridpos[1] <= 0:
                         grid_x = round(gridpos[0] / self.column_width)
                         self.mouse_grid_position = (grid_x, 0)
                     
