@@ -37,29 +37,51 @@ class PuppysPen:
         self.row_height = self.grid_height / self.num_rows
         self.column_width = self.grid_width / self.num_columns
         #print(self.row_height, self.column_width)
-        
+
         self.font = pygame.font.Font(None, 36)
-        self.instruction_text = self.font.render("Click once to start a rectangle, and again to finish it", True, (0, 0, 0))
-        self.instruction_text_pos = self.instruction_text.get_rect()
-        self.instruction_text_pos.centerx = self.py_screen.get_rect().centerx
-        
+
         self.level = Level(0, True)
         self.perimeter = self.level.level
-        self.level_text = self.font.render("Make a rectangle with perimeter " + str(self.perimeter), True, (0, 0, 0))
-        self.level_text_pos = self.instruction_text.get_rect()
-        self.level_text_pos.centerx = self.py_screen.get_rect().centerx
-        self.level_text_pos.centery = self.py_screen.get_rect().centery - 300
-        
+
+        self.update()
+
         self.mouse_grid_position = (0, 0)
         self.mouse_prev_grid_position = (0, 0)
         self.rect_origin = (0, 0)
         self.drawing_rect = False
 
-        # grass green
-        self.py_screen.fill((84,171,71))
-        self.py_screen.blit(self.level_text, self.level_text_pos)
-        self.py_screen.blit(self.instruction_text, self.instruction_text_pos)
+        #self.instruction_text_surface = self.font.render("Click once to start a rectangle, and again to finish it", True, (0, 0, 0))
+        #self.instruction_text_pos = self.instruction_text_surface.get_rect()
+        #self.instruction_text_pos.centerx = self.py_screen.get_rect().centerx
+
+        #self.level_text_surface = self.font.render("Make a rectangle with perimeter " + str(self.perimeter), True, (0, 0, 0))
+        #self.level_text_pos = self.level_text_surface.get_rect()
+        #self.level_text_pos.centerx = self.py_screen.get_rect().centerx
+        #self.level_text_pos.centery = self.py_screen.get_rect().centery - 300
+
+    def update(self):
+        self.draw_background()
+
+        self.instruction_text_surface, self.instruction_text_pos = self.draw_text("Click once to start a rectangle, and again to finish it")
+        self.instruction_text_pos.centerx = self.py_screen.get_rect().centerx
+
+        self.level_text_surface, self.level_text_pos = self.draw_text("Make a rectangle with perimeter " + str(self.perimeter))
+        self.level_text_pos.centerx = self.py_screen.get_rect().centerx
+        self.level_text_pos.centery = self.py_screen.get_rect().centery - 300
+
+        self.py_screen.blit(self.level_text_surface, self.level_text_pos)
+        self.py_screen.blit(self.instruction_text_surface, self.instruction_text_pos)
+
         self.draw_grid(self.grid_offset[0], self.grid_offset[1], self.grid_width, self.grid_height, self.num_rows, self.num_columns)
+
+    def draw_background(self, color=(84,171,71)):
+        # grass green
+        self.py_screen.fill(color)
+
+    def draw_text(self, text, color=(0,0,0)):
+        surface = self.font.render(text, True, color)
+        pos = surface.get_rect()
+        return surface, pos
 
     def center_coords(self, _w, _h):
         x_padding = int((Constants.WIDTH - _w) / 2.0)
@@ -86,16 +108,16 @@ class PuppysPen:
 
     def finish_user_rectangle(self):
         self.drawing_rect = False
-        
+
         origin_x = int(self.grid_offset[0] + (self.rect_origin[0] * self.column_width))
         origin_y = int(self.grid_offset[1] + (self.rect_origin[1] * self.row_height))
-        
+
         x_pos = int(self.grid_offset[0] + (self.mouse_grid_position[0] * self.column_width))
         y_pos = int(self.grid_offset[1] + (self.mouse_grid_position[1] * self.row_height))
-        
+
         width = x_pos - origin_x
         height = y_pos - origin_y
-        
+
         pygame.draw.rect(self.py_screen, (255, 0, 0), (origin_x, origin_y, width, height), 3)
 
         # Calculate perimeter and area of user-drawn rectangle
@@ -104,8 +126,6 @@ class PuppysPen:
     def get_offset_mouse(self):
         """ Returns a tuple (x,y) offset based on self.grid_offset """
         pos = pygame.mouse.get_pos()
-        #print(self.grid_offset)
-        #print(gridpos)
         return (pos[0] - self.grid_offset[0], pos[1] - self.grid_offset[1])
 
     def get_grid_mouse(self, pos):
@@ -113,13 +133,13 @@ class PuppysPen:
 
         if mouse_x <= 0 and mouse_y <= 0:
             mouse_grid_position = (0, 0)
-        
+
         elif mouse_x > 0 and mouse_y > 0:
             grid_x = round(mouse_x / float(self.column_width))
             grid_y = round(mouse_y / float(self.row_height))
             mouse_grid_position = (grid_x, grid_y)
             print(mouse_x / float(self.column_width), mouse_y / float(self.row_height))
-            print(mouse_grid_position)
+            #print(mouse_grid_position)
 
             if grid_x > self.num_columns:
                 if grid_y > self.num_rows:
@@ -129,18 +149,18 @@ class PuppysPen:
 
             if grid_y > self.num_rows:
                 mouse_grid_position = (mouse_grid_position[0], self.num_rows)
-        
+
         elif mouse_x <= 0:
             grid_y = round(mouse_y / self.row_height)
-            
+
             if grid_y > self.num_rows:
                 grid_y = self.num_rows
-            
+
             mouse_grid_position = (0, grid_y)
-            
+
         elif mouse_y <= 0:
             grid_x = round(mouse_x / self.column_width)
-            
+
             if grid_x > self.num_columns:
                 grid_x = self.num_columns
 
@@ -158,7 +178,7 @@ class PuppysPen:
 
         # The main game loop.
         while self.running:
-            
+
         # Should we be using the blit() method to draw things to the screen each frame?
         # If so, this seems like a good tutorial
         # https://www.pygame.org/docs/tut/tom/games2.html
@@ -184,15 +204,10 @@ class PuppysPen:
 
                     # If mouse_grid position and mouse_prev_grid_position are different
                     if (mouse_grid_x, mouse_grid_y) != self.mouse_prev_grid_position:
-                        if not self.drawing_rect:
-                            # Update the position of the yellow dot
-                            x_pos = int(self.grid_offset[0] + (mouse_grid_x * self.column_width))
-                            y_pos = int(self.grid_offset[1] + (mouse_grid_y * self.row_height))
-                            pygame.draw.circle(self.py_screen, (255, 255, 0), (x_pos, y_pos), 10)
-
-                        else:
-                            # Update the position of the yellow rectangle
-                            pass
+                        self.update()
+                        x_pos = int(self.grid_offset[0] + (mouse_grid_x * self.column_width))
+                        y_pos = int(self.grid_offset[1] + (mouse_grid_y * self.row_height))
+                        pygame.draw.circle(self.py_screen, (255, 255, 0), (x_pos, y_pos), 10)
 
                         self.mouse_prev_grid_position = self.mouse_grid_position
 
@@ -213,7 +228,6 @@ class PuppysPen:
 
                 elif event.type == QUIT:
                     self.running = False
-            
 
 class Screen(object):
     def __init__(self):
