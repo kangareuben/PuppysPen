@@ -44,6 +44,7 @@ class PuppysPen:
         self.perimeter = self.level.level
         
         self.feedback_string = ""
+        self.level_count = 1
 
         self.update()
 
@@ -70,9 +71,14 @@ class PuppysPen:
         self.level_text_surface, self.level_text_pos = self.draw_text("Make a rectangle with perimeter " + str(self.perimeter))
         self.level_text_pos.centerx = self.py_screen.get_rect().centerx
         self.level_text_pos.centery = self.py_screen.get_rect().centery - 300
+        
+        self.level_count_text_surface, self.level_count_text_pos = self.draw_text("Level: " + str(self.level_count))
+        self.level_count_text_pos.centerx = self.py_screen.get_rect().centerx - 500
+        self.level_count_text_pos.centery = self.py_screen.get_rect().centery - 300
 
         self.py_screen.blit(self.level_text_surface, self.level_text_pos)
         self.py_screen.blit(self.instruction_text_surface, self.instruction_text_pos)
+        self.py_screen.blit(self.level_count_text_surface, self.level_count_text_pos)
 
         self.draw_grid(self.grid_offset[0], self.grid_offset[1], self.grid_width, self.grid_height, self.num_rows, self.num_columns)
 
@@ -131,6 +137,7 @@ class PuppysPen:
         if rect_perimeter == self.perimeter:
             # Success! New level
             self.feedback_text = "Well done!"
+            self.level_count += 1
             
             self.level = Level(0, True)
             self.perimeter = self.level.level
