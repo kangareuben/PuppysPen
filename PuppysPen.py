@@ -42,6 +42,8 @@ class PuppysPen:
 
         self.level = Level(0, True)
         self.perimeter = self.level.level
+        
+        self.feedback_string = ""
 
         self.update()
 
@@ -125,14 +127,22 @@ class PuppysPen:
         rect_height = abs(self.mouse_grid_position[1] - self.rect_origin[1])
         
         rect_perimeter = 2 * rect_width + 2 * rect_height
+        
         if rect_perimeter == self.perimeter:
             # Success! New level
+            self.feedback_text = "Well done!"
+            
             self.level = Level(0, True)
             self.perimeter = self.level.level
             
         else:
             # Wat? Retry level
-            pass
+            self.feedback_text = "Oops, try again :("
+            
+        self.feedback_text_surface, self.feedback_text_pos = self.draw_text(self.feedback_text)
+        self.feedback_text_pos.centerx = self.py_screen.get_rect().centerx
+        self.feedback_text_pos.centery = self.py_screen.get_rect().centery + 300
+        self.py_screen.blit(self.feedback_text_surface, self.feedback_text_pos)
 
     def get_offset_mouse(self):
         """ Returns a tuple (x,y) offset based on self.grid_offset """
