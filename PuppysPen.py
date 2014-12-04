@@ -205,9 +205,21 @@ class PuppysPen:
                     # If mouse_grid position and mouse_prev_grid_position are different
                     if (mouse_grid_x, mouse_grid_y) != self.mouse_prev_grid_position:
                         self.update()
+                        
                         x_pos = int(self.grid_offset[0] + (mouse_grid_x * self.column_width))
                         y_pos = int(self.grid_offset[1] + (mouse_grid_y * self.row_height))
-                        pygame.draw.circle(self.py_screen, (255, 255, 0), (x_pos, y_pos), 10)
+                        
+                        if not self.drawing_rect:
+                            pygame.draw.circle(self.py_screen, (255, 255, 0), (x_pos, y_pos), 10)
+                        
+                        else:
+                            origin_x = int(self.grid_offset[0] + (self.rect_origin[0] * self.column_width))
+                            origin_y = int(self.grid_offset[1] + (self.rect_origin[1] * self.row_height))
+                            
+                            width = x_pos - origin_x
+                            height = y_pos - origin_y
+
+                            pygame.draw.rect(self.py_screen, (255, 0, 0), (origin_x, origin_y, width, height), 3)
 
                         self.mouse_prev_grid_position = self.mouse_grid_position
 
