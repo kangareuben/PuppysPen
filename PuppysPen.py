@@ -120,8 +120,19 @@ class PuppysPen:
 
         pygame.draw.rect(self.py_screen, (255, 0, 0), (origin_x, origin_y, width, height), 3)
 
-        # Calculate perimeter and area of user-drawn rectangle
-        # and compare it to the level criteria
+        # Calculate perimeter of rectangle and check against level's perimeter
+        rect_width = abs(self.mouse_grid_position[0] - self.rect_origin[0])
+        rect_height = abs(self.mouse_grid_position[1] - self.rect_origin[1])
+        
+        rect_perimeter = 2 * rect_width + 2 * rect_height
+        if rect_perimeter == self.perimeter:
+            # Success! New level
+            self.level = Level(0, True)
+            self.perimeter = self.level.level
+            
+        else:
+            # Wat? Retry level
+            pass
 
     def get_offset_mouse(self):
         """ Returns a tuple (x,y) offset based on self.grid_offset """
