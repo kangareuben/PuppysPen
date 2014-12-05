@@ -40,11 +40,12 @@ class PuppysPen:
 
         self.font = pygame.font.Font(None, 36)
 
-        self.level = Level(0, True)
-        self.perimeter = self.level.level
+        self.level = Level(0, False, True)
+        self.area = self.level.level
+        self.perimeter = 0
         
         self.feedback_string = ""
-        self.level_count = 1
+        self.level_count = 0
 
         self.update()
 
@@ -67,12 +68,20 @@ class PuppysPen:
 
         self.instruction_text_surface, self.instruction_text_pos = self.draw_text("Click once to start a rectangle, and again to finish it")
         self.instruction_text_pos.centerx = self.py_screen.get_rect().centerx
-
-        self.level_text_surface, self.level_text_pos = self.draw_text("Make a rectangle with perimeter " + str(self.perimeter))
+        
+        if self.level_count % 15 < 5:
+            self.level_text_surface, self.level_text_pos = self.draw_text("Make a rectangle with area " + str(self.area))
+        
+        elif self.level_count % 15 < 10:
+            self.level_text_surface, self.level_text_pos = self.draw_text("Make a rectangle with perimeter " + str(self.perimeter))
+            
+        else:
+            self.level_text_surface, self.level_text_pos = self.draw_text("Make a rectangle with area " + str(self.area) + " and perimeter " + str(self.perimeter))
+        
         self.level_text_pos.centerx = self.py_screen.get_rect().centerx
         self.level_text_pos.centery = self.py_screen.get_rect().centery - 300
         
-        self.level_count_text_surface, self.level_count_text_pos = self.draw_text("Level: " + str(self.level_count))
+        self.level_count_text_surface, self.level_count_text_pos = self.draw_text("Level: " + str(self.level_count + 1))
         self.level_count_text_pos.centerx = self.py_screen.get_rect().centerx - 500
         self.level_count_text_pos.centery = self.py_screen.get_rect().centery - 300
 
@@ -111,10 +120,12 @@ class PuppysPen:
             self.draw_rectangle(_x, j * _row_height + _y, _width, 1)
 
     def begin_user_rectangle(self):
+        """ Starts drawing a user rectangle """
         self.drawing_rect = True
         self.rect_origin = self.mouse_grid_position
 
     def finish_user_rectangle(self):
+        """ Stops drawing a user rectangle and calculates whether the rectangle met criteria """
         self.drawing_rect = False
 
         origin_x = int(self.grid_offset[0] + (self.rect_origin[0] * self.column_width))
@@ -132,24 +143,77 @@ class PuppysPen:
         rect_width = abs(self.mouse_grid_position[0] - self.rect_origin[0])
         rect_height = abs(self.mouse_grid_position[1] - self.rect_origin[1])
         
-        rect_perimeter = 2 * rect_width + 2 * rect_height
+        # Levels 1-5 are area only
+        if self.level_count % 15 < 5:
+            rect_area = rect_width * rect_height
+            
+            if rect_area == self.area:
+                # Success! New level
+                self.level_success()
+            
+            else:
+                # Wat? Retry level
+                self.level_failure()
         
-        if rect_perimeter == self.perimeter:
-            # Success! New level
-            self.feedback_text = "Well done!"
-            self.level_count += 1
+        # Levels 6-10 are perimeter only
+        elif self.level_count % 15 < 10:
+            rect_perimeter = 2 * rect_width + 2 * rect_height
             
-            self.level = Level(0, True)
-            self.perimeter = self.level.level
-            
+            if rect_perimeter == self.perimeter:
+                # Success! New level
+                self.level_success()
+                
+            else:
+                # Wat? Retry level
+                self.level_failure()
+        
+        # Levels 11-15 are area and perimeter
         else:
-            # Wat? Retry level
-            self.feedback_text = "Oops, try again :("
+            rect_area = rect_width * rect_height
+            rect_perimeter = 2 * rect_width + 2 * rect_height
+            
+            if rect_area == self.area and rect_perimeter == self.perimeter:
+                # Success! New level
+                self.level_success()
+            
+            else:
+                # Wat? Retry level
+                self.level_failure()
+            
             
         self.feedback_text_surface, self.feedback_text_pos = self.draw_text(self.feedback_text)
         self.feedback_text_pos.centerx = self.py_screen.get_rect().centerx
         self.feedback_text_pos.centery = self.py_screen.get_rect().centery + 300
         self.py_screen.blit(self.feedback_text_surface, self.feedback_text_pos)
+        
+    def level_success(self):
+        """ Gives positive feedback to the user and generates a new level """
+        self.feedback_text = "Well done!"
+        self.level_count += 1
+        
+        # Make the grid bigger every 15 levels
+        if self.level_count % 15 == 0:
+            self.num_rows += 2
+            self.num_columns += 2
+            self.row_height = self.grid_height / self.num_rows
+            self.column_width = self.grid_width / self.num_columns
+        
+        if self.level_count % 15 < 5:
+            self.level = Level(0, False, True, (self.num_rows, self.num_columns))
+            self.area = self.level.level
+        
+        elif self.level_count % 15 < 10:
+            self.level = Level(0, True, False, (self.num_rows, self.num_columns))
+            self.perimeter = self.level.level
+            
+        else:
+            self.level = Level(0, True, True, (self.num_rows, self.num_columns))
+            self.area = self.level.level[0]
+            self.perimeter = int(self.level.level[1])
+    
+    def level_failure(self):
+        """ Gives feedback to the user about what went wrong on this attempt """
+        self.feedback_text = "Oops, try again :("
 
     def get_offset_mouse(self):
         """ Returns a tuple (x,y) offset based on self.grid_offset """
