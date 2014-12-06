@@ -301,7 +301,6 @@ class GameScreen(Screen):
                 grid_x = self.num_columns
 
             mouse_grid_position = (grid_x, 0)
-
         return mouse_grid_position
 
     def update(self):
@@ -329,6 +328,8 @@ class GameScreen(Screen):
         self.py_screen.blit(self.level_count_text_surface, self.level_count_text_pos)
 
         self.draw_grid(self.grid_offset[0], self.grid_offset[1], self.grid_width, self.grid_height, self.num_rows, self.num_columns)
+
+        Button(self.py_screen, (0, 0), 100, 20, "Yolo", None)
 
     def click(self, pos):
         if not self.drawing_rect:
@@ -364,6 +365,57 @@ class GameScreen(Screen):
                 pygame.draw.rect(self.game.py_screen, (255, 0, 0), (origin_x, origin_y, width, height), 3)
 
             self.mouse_prev_grid_position = self.mouse_grid_position
+
+class Button():
+
+    def __init__(self, screen, pos, width, height, text, handler):
+        self.pos = pos
+        self.width = width
+        self.screen = screen
+        self.height = height
+        self.text = text
+        self.handler = handler
+        self.rect = pygame.Rect((pos), (width, height))
+        
+        RoundedRect(self.screen, self.rect, (255,255,255)) 
+
+def RoundedRect(surface, rect, color, radius=0.4):
+    """
+    RoundedRect(surface,rect,color,radius=0.4)
+
+    surface : destination
+    rect    : rectangle
+    color   : rgb or rgba
+    radius  : 0 <= radius <= 1
+    """
+
+    rect         = pygame.Rect(rect)
+    color        = pygame.Color(*color)
+    alpha        = color.a
+    color.a      = 0
+    pos          = rect.topleft
+    rect.topleft = 0,0
+    rectangle    = pygame.Surface(rect.size, pygame.SRCALPHA)
+
+    circle       =  pygame.Surface([min(rect.size)*3]*2, pygame.SRCALPHA)
+    pygame.draw.ellipse(circle,(0,0,0),circle.get_rect(),0)
+    circle       = pygame.transform.smoothscale(circle,[int(min(rect.size)*radius)]*2)
+
+    radius              = rectangle.blit(circle,(0,0))
+    radius.bottomright  = rect.bottomright
+    rectangle.blit(circle,radius)
+    radius.topright     = rect.topright
+    rectangle.blit(circle,radius)
+    radius.bottomleft   = rect.bottomleft
+    rectangle.blit(circle,radius)
+
+    rectangle.fill((0,0,0),rect.inflate(-radius.w,0))
+    rectangle.fill((0,0,0),rect.inflate(0,-radius.h))
+
+    rectangle.fill(color,special_flags=pygame.BLEND_RGBA_MAX)
+    rectangle.fill((255,255,255,alpha),special_flags=pygame.BLEND_RGBA_MIN)
+
+    return surface.blit(rectangle,pos)
 
 # This function is called when the game is run directly from the command line:
 # ./PuppysPen.py
