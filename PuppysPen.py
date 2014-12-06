@@ -2,7 +2,8 @@
 '''
 Primary pygame file. Deals with all the stuff.
 
-Application structure taken from brendanwhitfield/planetary
+Application structure taken from the github repos:
+brendanwhitfield/planetary & FOSSRIT/sugar-quickstart
 '''
 
 # python
@@ -22,12 +23,12 @@ from Level import Level
 class PuppysPen:
 
     # Runs before the game loop begins
-    def __init__(self, _py_screen):
+    def __init__(self):
         self.running = True # controls the exit of the game loop
         self.clock = pygame.time.Clock() # controls the frame rate
         self.forceAll = False # force an entire repaint of the screen on the next frame
         self.clicked = None # the ID of the object that was clicked
-        self.py_screen = _py_screen
+        self.py_screen = pygame.display.get_surface()
 
         self.grid_offset = self.center_coords(600, 400)
         self.grid_width = 600
@@ -38,12 +39,13 @@ class PuppysPen:
         self.column_width = self.grid_width / self.num_columns
         #print(self.row_height, self.column_width)
 
-        self.font = pygame.font.Font(None, 36)
+        #pygame.font.init()
+        #self.font = pygame.font.Font(None, 36)
 
         self.level = Level(0, False, True)
         self.area = self.level.level
         self.perimeter = 0
-        
+
         self.feedback_string = ""
         self.level_count = 0
 
@@ -67,27 +69,27 @@ class PuppysPen:
         self.draw_background()
 
         self.instruction_text_surface, self.instruction_text_pos = self.draw_text("Click once to start a rectangle, and again to finish it")
-        self.instruction_text_pos.centerx = self.py_screen.get_rect().centerx
-        
+        #self.instruction_text_pos.centerx = self.py_screen.get_rect().centerx
+
         if self.level_count % 15 < 5:
             self.level_text_surface, self.level_text_pos = self.draw_text("Make a rectangle with area " + str(self.area))
-        
+
         elif self.level_count % 15 < 10:
             self.level_text_surface, self.level_text_pos = self.draw_text("Make a rectangle with perimeter " + str(self.perimeter))
-            
+
         else:
             self.level_text_surface, self.level_text_pos = self.draw_text("Make a rectangle with area " + str(self.area) + " and perimeter " + str(self.perimeter))
-        
-        self.level_text_pos.centerx = self.py_screen.get_rect().centerx
-        self.level_text_pos.centery = self.py_screen.get_rect().centery - 300
-        
-        self.level_count_text_surface, self.level_count_text_pos = self.draw_text("Level: " + str(self.level_count + 1))
-        self.level_count_text_pos.centerx = self.py_screen.get_rect().centerx - 500
-        self.level_count_text_pos.centery = self.py_screen.get_rect().centery - 300
 
-        self.py_screen.blit(self.level_text_surface, self.level_text_pos)
-        self.py_screen.blit(self.instruction_text_surface, self.instruction_text_pos)
-        self.py_screen.blit(self.level_count_text_surface, self.level_count_text_pos)
+        #self.level_text_pos.centerx = self.py_screen.get_rect().centerx
+        #self.level_text_pos.centery = self.py_screen.get_rect().centery - 300
+
+        self.level_count_text_surface, self.level_count_text_pos = self.draw_text("Level: " + str(self.level_count + 1))
+        #self.level_count_text_pos.centerx = self.py_screen.get_rect().centerx - 500
+        #self.level_count_text_pos.centery = self.py_screen.get_rect().centery - 300
+
+        #self.py_screen.blit(self.level_text_surface, self.level_text_pos)
+        #self.py_screen.blit(self.instruction_text_surface, self.instruction_text_pos)
+        #self.py_screen.blit(self.level_count_text_surface, self.level_count_text_pos)
 
         self.draw_grid(self.grid_offset[0], self.grid_offset[1], self.grid_width, self.grid_height, self.num_rows, self.num_columns)
 
@@ -96,9 +98,10 @@ class PuppysPen:
         self.py_screen.fill(color)
 
     def draw_text(self, text, color=(0,0,0)):
-        surface = self.font.render(text, True, color)
-        pos = surface.get_rect()
-        return surface, pos
+        #surface = self.font.render(text, True, color)
+        #pos = surface.get_rect()
+        #return surface, pos
+        return False, False
 
     def center_coords(self, _w, _h):
         x_padding = int((Constants.WIDTH - _w) / 2.0)
@@ -142,75 +145,75 @@ class PuppysPen:
         # Calculate perimeter of rectangle and check against level's perimeter
         rect_width = abs(self.mouse_grid_position[0] - self.rect_origin[0])
         rect_height = abs(self.mouse_grid_position[1] - self.rect_origin[1])
-        
+
         # Levels 1-5 are area only
         if self.level_count % 15 < 5:
             rect_area = rect_width * rect_height
-            
+
             if rect_area == self.area:
                 # Success! New level
                 self.level_success()
-            
+
             else:
                 # Wat? Retry level
                 self.level_failure()
-        
+
         # Levels 6-10 are perimeter only
         elif self.level_count % 15 < 10:
             rect_perimeter = 2 * rect_width + 2 * rect_height
-            
+
             if rect_perimeter == self.perimeter:
                 # Success! New level
                 self.level_success()
-                
+
             else:
                 # Wat? Retry level
                 self.level_failure()
-        
+
         # Levels 11-15 are area and perimeter
         else:
             rect_area = rect_width * rect_height
             rect_perimeter = 2 * rect_width + 2 * rect_height
-            
+
             if rect_area == self.area and rect_perimeter == self.perimeter:
                 # Success! New level
                 self.level_success()
-            
+
             else:
                 # Wat? Retry level
                 self.level_failure()
-            
-            
-        self.feedback_text_surface, self.feedback_text_pos = self.draw_text(self.feedback_text)
-        self.feedback_text_pos.centerx = self.py_screen.get_rect().centerx
-        self.feedback_text_pos.centery = self.py_screen.get_rect().centery + 300
-        self.py_screen.blit(self.feedback_text_surface, self.feedback_text_pos)
-        
+
+
+        #self.feedback_text_surface, self.feedback_text_pos = self.draw_text(self.feedback_text)
+        #self.feedback_text_pos.centerx = self.py_screen.get_rect().centerx
+        #self.feedback_text_pos.centery = self.py_screen.get_rect().centery + 300
+        #self.py_screen.blit(self.feedback_text_surface, self.feedback_text_pos)
+
     def level_success(self):
         """ Gives positive feedback to the user and generates a new level """
         self.feedback_text = "Well done!"
         self.level_count += 1
-        
+
         # Make the grid bigger every 15 levels
         if self.level_count % 15 == 0:
             self.num_rows += 2
             self.num_columns += 2
             self.row_height = self.grid_height / self.num_rows
             self.column_width = self.grid_width / self.num_columns
-        
+
         if self.level_count % 15 < 5:
             self.level = Level(0, False, True, (self.num_rows, self.num_columns))
             self.area = self.level.level
-        
+
         elif self.level_count % 15 < 10:
             self.level = Level(0, True, False, (self.num_rows, self.num_columns))
             self.perimeter = self.level.level
-            
+
         else:
             self.level = Level(0, True, True, (self.num_rows, self.num_columns))
             self.area = self.level.level[0]
             self.perimeter = int(self.level.level[1])
-    
+
     def level_failure(self):
         """ Gives feedback to the user about what went wrong on this attempt """
         self.feedback_text = "Oops, try again :("
@@ -230,7 +233,7 @@ class PuppysPen:
             grid_x = round(mouse_x / float(self.column_width))
             grid_y = round(mouse_y / float(self.row_height))
             mouse_grid_position = (grid_x, grid_y)
-            print(mouse_x / float(self.column_width), mouse_y / float(self.row_height))
+            #print(mouse_x / float(self.column_width), mouse_y / float(self.row_height))
             #print(mouse_grid_position)
 
             if grid_x > self.num_columns:
@@ -297,17 +300,17 @@ class PuppysPen:
                     # If mouse_grid position and mouse_prev_grid_position are different
                     if (mouse_grid_x, mouse_grid_y) != self.mouse_prev_grid_position:
                         self.update()
-                        
+
                         x_pos = int(self.grid_offset[0] + (mouse_grid_x * self.column_width))
                         y_pos = int(self.grid_offset[1] + (mouse_grid_y * self.row_height))
-                        
+
                         if not self.drawing_rect:
                             pygame.draw.circle(self.py_screen, (255, 255, 0), (x_pos, y_pos), 10)
-                        
+
                         else:
                             origin_x = int(self.grid_offset[0] + (self.rect_origin[0] * self.column_width))
                             origin_y = int(self.grid_offset[1] + (self.rect_origin[1] * self.row_height))
-                            
+
                             width = x_pos - origin_x
                             height = y_pos - origin_y
 
@@ -360,9 +363,8 @@ class GameScreen(Screen):
 # ./PuppysPen.py
 def main():
     pygame.init()
-    py_screen = pygame.display.set_mode((Constants.WIDTH, Constants.HEIGHT), \
-            pygame.RESIZABLE) # 54 = height of sugar toolbar
-    game = PuppysPen(py_screen)
+    pygame.display.set_mode((Constants.WIDTH, Constants.HEIGHT), pygame.RESIZABLE)
+    game = PuppysPen()
     game.run()
 
 if __name__ == '__main__':

@@ -1,8 +1,7 @@
-from gettext import gettext as _
-
 import sys
-from gi.repository import Gtk
 import pygame
+from gi.repository import Gtk
+from gettext import gettext as _
 
 import sugar3.activity.activity
 from sugar3.graphics.toolbarbox import ToolbarBox
@@ -11,9 +10,7 @@ from sugar3.graphics.toolbutton import ToolButton
 from sugar3.activity.widgets import StopButton
 
 import sugargame.canvas
-
 import TestGame
-
 
 class TestActivity(sugar3.activity.activity.Activity):
     def __init__(self, handle):
@@ -22,7 +19,7 @@ class TestActivity(sugar3.activity.activity.Activity):
         self.paused = False
 
         # Create the game instance.
-        self.game = TestGame.TestGame()
+        #self.game = TestGame.TestGame()
 
         # Build the activity toolbar.
         self.build_toolbar()
@@ -37,7 +34,7 @@ class TestActivity(sugar3.activity.activity.Activity):
 
         # Start the game running (self.game.run is called when the
         # activity constructor returns).
-        self._pygamecanvas.run_pygame(self.game.run)
+        #self._pygamecanvas.run_pygame(self.game.run)
 
     def build_toolbar(self):
         toolbar_box = ToolbarBox()

@@ -13,6 +13,7 @@ from sugar3.activity.widgets import StopButton
 import sugargame.canvas
 
 import TestGame
+import PuppysPen
 
 
 class TestActivity(sugar3.activity.activity.Activity):
@@ -22,7 +23,8 @@ class TestActivity(sugar3.activity.activity.Activity):
         self.paused = False
 
         # Create the game instance.
-        self.game = TestGame.TestGame()
+        #self.game = TestGame.TestGame()
+        self.game = PuppysPen.PuppysPen()
 
         # Build the activity toolbar.
         self.build_toolbar()

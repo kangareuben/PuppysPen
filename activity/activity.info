@@ -1,8 +1,8 @@
 [Activity]
-name = example
-bundle_id = example.laptop.org
-icon = exampleicon
-exec = sugar-activity activity.Example
-show_launcher = yes
+name = Puppy's Pen
+bundle_id = puppys_pen.laptop.org
+icon = puppy-icon
+exec = sugar-activity TestActivity.TestActivity
+show_launcher = no
 activity_version = 1
-license = GPLv2+
+license = MIT
