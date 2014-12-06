@@ -25,7 +25,7 @@ Handles primary game logic and UI. Manages the game state and data. Switches and
 
 
 ###Level.py
-Hold alls the data for a level, takes care of level generation. 
+Hold alls the data for a level, takes care of level generation.
 
 
 ###Constants.py
@@ -35,6 +35,6 @@ Conatins game-wide constants
 
 License
 =======
-Puppy's Pen is licensed under the MIT license, found here -  https://raw.githubusercontent.com/kangareuben/PuppysPen/master/LICENSE 
+Puppy's Pen is licensed under the MIT license, found here -  https://raw.githubusercontent.com/kangareuben/PuppysPen/master/LICENSE
 
 Base application taken from https://github.com/FOSSRIT/sugar-quickstart.
