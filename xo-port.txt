@@ -1,0 +1,32 @@
+## Useful Links:
+http://booki.flossmanuals.net/make-your-own-sugar-activities/debugging-sugar-activities/
+http://en.flossmanuals.net/make-your-own-sugar-activities/making-activities-using-pygame/
+
+## Observations:
+
+sugar-emulator is now sugar-runnner
+To get our app to show up in the virtual XO we need to run:
+
+python setup.py dev
+
+To use sugar-runner we just need to give it some reslolution:
+
+sugar-runner --resolution 800x600
+
+The `exec` field in the activity/activity.info file is the starting point of the application.
+
+Right now I have it set to run TestActivity.TestActivity
+
+In which there is a line to either instatiate TestGame or PuppysPen
+
+TestGame works fine PuppysPen doesn't start.
+
+Looking at the Logs activity at first it was yelling at me about fonts not being intitialized, so I commented all that out.
+
+Then it said the surface wasn't initialized.
+
+So what it seems like to me is that our main() method isn't getting called to initialize pygame.
+
+What I don't understand is how it seems to work in TestGame even though our structure is almost identical.
+
+...so that's where I left off.
