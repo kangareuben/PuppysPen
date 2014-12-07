@@ -23,10 +23,12 @@ from Screens import GameScreen, MainScreen
 class PuppysPen:
     # Runs before the game loop begins
     def __init__(self, _py_screen):
-        self.running = True # controls the exit of the game loop
-        self.clock = pygame.time.Clock() # controls the frame rate
-        self.forceAll = False # force an entire repaint of the screen on the next frame
-        #self.clicked = None # the ID of the object that was clicked
+        # controls the exit of the game loop
+        self.running = True
+        # controls the frame rate
+        self.clock = pygame.time.Clock()
+        # force an entire repaint of the screen on the next frame
+        self.forceAll = False
         self.py_screen = _py_screen
         self.font_reg = os.path.join("resources", "Arvo-Regular.ttf")
         self.font_bold = os.path.join("resources", "Arvo-Bold.ttf")
@@ -57,13 +59,17 @@ class PuppysPen:
         return (x_padding, y_padding)
 
     def draw_rectangle(self, _x, _y, _width, _height):
-        pygame.draw.rect(self.py_screen, DARKGREY, (_x,_y,_width,_height), 1)
+        pygame.draw.rect(self.py_screen, LIGHTGREY, (_x,_y,_width,_height), 1)
 
-    def switch_screen(self, screen):
+    def switch_screen(self, screen, new_game=False):
+        print(self.main_screen.first_time)
         if screen.lower() == "main" or screen.lower() == "home":
             self.screen = self.main_screen
+
         elif screen.lower() == "game" or screen.lower() == "play":
+            if new_game: self.game_screen = GameScreen(self.py_screen, self)
             self.screen = self.game_screen
+            self.main_screen.first_time = False
         self.update()
 
     # Main game loop
@@ -73,7 +79,6 @@ class PuppysPen:
 
         # set the initial screen
         self.screen = self.main_screen
-        #self.screen = self.game_screen
         self.update()
 
         # The main game loop.
