@@ -4,7 +4,7 @@ The place for constants used throughout the program
 
 # XO Screen Resolution
 WIDTH = 1200
-HEIGHT = 900 - 54
+HEIGHT = 846
 
 GREEN = (84,171,71)
 DARKGREY = (54,54,54)
