@@ -88,52 +88,31 @@ class GameScreen(Screen):
         self.column_width = float(self.grid_width) / float(self.num_columns)
 
         # Draw the 0 only once
-        self.font = pygame.font.Font(None, 20)
+        num_font = pygame.font.Font(self.game.font_reg, 20)
 
-        self.grid_number_text_surface, self.grid_number_text_pos = self.game.draw_text(str(0))
+        self.grid_number_text_surface, self.grid_number_text_pos = self.game.draw_text(str(0), num_font)
         self.grid_number_text_pos.centerx = self.grid_offset[0] - 13
         self.grid_number_text_pos.centery = self.grid_offset[1] - 13
         self.py_screen.blit(self.grid_number_text_surface, self.grid_number_text_pos)
-
-        self.font = pygame.font.Font(None, 36)
 
         for i in range(0, self.num_columns + 1):
             self.game.draw_rectangle(i * self.column_width + self.grid_offset[0], self.grid_offset[1], 1, self.grid_height)
 
             if i > 0:
                 # Draw grid numbers
-                self.font = pygame.font.Font(None, 20)
-
-                self.grid_number_text_surface, self.grid_number_text_pos = self.game.draw_text(str(i))
+                self.grid_number_text_surface, self.grid_number_text_pos = self.game.draw_text(str(i), num_font)
                 self.grid_number_text_pos.centerx = i * self.column_width + self.grid_offset[0]
                 self.grid_number_text_pos.centery = self.grid_offset[1] - 14
                 self.py_screen.blit(self.grid_number_text_surface, self.grid_number_text_pos)
-
-                self.font = pygame.font.Font(None, 36)
 
         for j in range(0, self.num_rows + 1):
             self.game.draw_rectangle(self.grid_offset[0], j * self.row_height + self.grid_offset[1], self.grid_width, 1)
 
             if j > 0:
-                self.font = pygame.font.Font(None, 20)
-
-                self.grid_number_text_surface, self.grid_number_text_pos = self.game.draw_text(str(j))
+                self.grid_number_text_surface, self.grid_number_text_pos = self.game.draw_text(str(j), num_font)
                 self.grid_number_text_pos.centerx = self.grid_offset[0] - 14
                 self.grid_number_text_pos.centery = j * self.row_height + self.grid_offset[1]
                 self.py_screen.blit(self.grid_number_text_surface, self.grid_number_text_pos)
-
-                self.font = pygame.font.Font(None, 36)
-
-    # pre-merge
-    #def draw_grid(self, _x, _y, _width, _height, _num_rows, _num_columns):
-        #_row_height = int(_height / _num_rows)
-        #_column_width = int(_width / _num_columns)
-
-        #for i in range(0, _num_columns + 1):
-            #self.game.draw_rectangle(i * _column_width + _x, _y, 1, _height)
-
-        #for j in range(0, _num_rows + 1):
-            #self.game.draw_rectangle(_x, j * _row_height + _y, _width, 1)
 
     def begin_user_rectangle(self):
         """ Starts drawing a user rectangle """
@@ -154,7 +133,7 @@ class GameScreen(Screen):
         width = x_pos - origin_x
         height = y_pos - origin_y
 
-        pygame.draw.rect(self.py_screen, (255, 0, 0), (origin_x, origin_y, width, height), 3)
+        pygame.draw.rect(self.py_screen, MAROON, (origin_x, origin_y, width, height), 3)
 
         # Calculate perimeter of rectangle and check against level's perimeter
         rect_width = abs(self.mouse_grid_position[0] - self.rect_origin[0])
@@ -381,29 +360,35 @@ class GameScreen(Screen):
         #return mouse_grid_position
 
     def update(self):
-        self.instruction_text_surface, self.instruction_text_pos = self.game.draw_text("Click and drag to create a rectangle")
+        self.instruction_text_surface, self.instruction_text_pos = \
+            self.game.draw_text("Click and drag to create a rectangle")
         self.instruction_text_pos.centerx = self.py_screen.get_rect().centerx
         self.instruction_text_pos.centery = self.py_screen.get_rect().centery - 385
 
         if self.level_count % 15 < 5:
-            self.level_text_surface, self.level_text_pos = self.game.draw_text("Make a rectangle with area " + str(self.area))
+            level_text = "Make a rectangle with area " + str(self.area)
+
         elif self.level_count % 15 < 10:
-            self.level_text_surface, self.level_text_pos = self.game.draw_text("Make a rectangle with perimeter " + str(self.perimeter))
+            level_text = "Make a rectangle with perimeter " + str(self.perimeter)
         else:
-            self.level_text_surface, self.level_text_pos = self.game.draw_text("Make a rectangle with area " + str(self.area) + " and perimeter " + str(self.perimeter))
+            level_text = "Make a rectangle with area " + str(self.area) + \
+                         " and perimeter " + str(self.perimeter) 
+
+        self.level_text_surface, self.level_text_pos = \
+            self.game.draw_text(level_text)
 
         self.level_text_pos.centerx = self.py_screen.get_rect().centerx
         self.level_text_pos.centery = self.py_screen.get_rect().centery - 345
 
-        self.level_count_text_surface, self.level_count_text_pos = self.game.draw_text("Level: " + str(self.level_count + 1))
-        self.level_count_text_pos.centerx = self.py_screen.get_rect().centerx - 520
+        self.level_count_text_surface, self.level_count_text_pos = \
+            self.game.draw_text("Level: " + str(self.level_count + 1))
+        self.level_count_text_pos.centerx = self.py_screen.get_rect().centerx + 520
         self.level_count_text_pos.centery = self.py_screen.get_rect().centery - 385
 
         self.py_screen.blit(self.level_text_surface, self.level_text_pos)
         self.py_screen.blit(self.instruction_text_surface, self.instruction_text_pos)
         self.py_screen.blit(self.level_count_text_surface, self.level_count_text_pos)
 
-        #self.draw_grid(self.grid_offset[0], self.grid_offset[1], self.grid_width, self.grid_height, self.num_rows, self.num_columns)
         self.draw_grid()
 
         self.button_list.append(Button(self.game, (10, 10), 90, 25, "Go Back", self.back_event))
@@ -455,28 +440,6 @@ class GameScreen(Screen):
                 pygame.draw.rect(self.game.py_screen, MAROON, (origin_x, origin_y, width, height), 3)
 
             self.mouse_prev_grid_position = self.mouse_grid_position
-
-        # pre-merge
-        #mouse_x, mouse_y = self.get_offset_mouse()
-        # Update mouse_grid_position based on current mouse position
-        #mouse_grid_x, mouse_grid_y = self.get_grid_mouse((mouse_x, mouse_y))
-        #self.mouse_grid_position = (mouse_grid_x, mouse_grid_y)
-        # TODO: Empty mouse_move handler at the moment
-        #self.screen.mouse_move(pos)
-        # If mouse_grid position and mouse_prev_grid_position are different
-        #if (mouse_grid_x, mouse_grid_y) != self.mouse_prev_grid_position:
-            #self.update()
-            #x_pos = int(self.grid_offset[0] + (mouse_grid_x * self.column_width))
-            #y_pos = int(self.grid_offset[1] + (mouse_grid_y * self.row_height))
-            #if not self.drawing_rect:
-                #pygame.draw.circle(self.py_screen, (255, 255, 0), (x_pos, y_pos), 7)
-            #else:
-                #origin_x = int(self.grid_offset[0] + (self.rect_origin[0] * self.column_width))
-                #origin_y = int(self.grid_offset[1] + (self.rect_origin[1] * self.row_height))
-                #width = x_pos - origin_x
-                #height = y_pos - origin_y
-                #pygame.draw.rect(self.py_screen, (255, 0, 0), (origin_x, origin_y, width, height), 3)
-            #self.mouse_prev_grid_position = self.mouse_grid_position
 
 class Button():
     def __init__(self, screen, pos, width, height, text, handler):

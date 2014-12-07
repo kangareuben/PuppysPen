@@ -28,7 +28,9 @@ class PuppysPen:
         self.forceAll = False # force an entire repaint of the screen on the next frame
         #self.clicked = None # the ID of the object that was clicked
         self.py_screen = _py_screen
-        self.font = pygame.font.Font("resources/Arvo-Regular.ttf", 36)
+        self.font_reg = "resources/Arvo-Regular.ttf"
+        self.font_bold = "resources/Arvo-Bold.ttf"
+        self.font = pygame.font.Font(self.font_reg, 36)
         self.rect_origin = (0, 0)
         self.screen = None
         self.update()
@@ -41,8 +43,9 @@ class PuppysPen:
         # grass green
         self.py_screen.fill(color)
 
-    def draw_text(self, text, color=(0,0,0)):
-        surface = self.font.render(text, True, color)
+    def draw_text(self, text, pyfont=None, color=(0,0,0)):
+        if not pyfont: pyfont = self.font
+        surface = pyfont.render(text, True, color)
         pos = surface.get_rect()
         return surface, pos
 
@@ -97,8 +100,6 @@ class PuppysPen:
                 elif event.type == MOUSEBUTTONDOWN:
                     if event.button == 1 or event.button == 3:
                         self.screen.mouse_down(pos)
-                        #if not self.drawing_rect:
-                            #self.begin_user_rectangle()
 
                 elif event.type == MOUSEBUTTONUP:
                     if event.button == 1 or event.button == 3:
