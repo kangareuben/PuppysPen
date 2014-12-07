@@ -92,7 +92,8 @@ class GameScreen(Screen):
         super(GameScreen, self).__init__()
         self.game = _game
         self.py_screen = _py_screen
-        self.num_font = pygame.font.Font(self.game.font_reg, 20)
+        self.num_font = pygame.font.Font(None, 20)
+        #self.num_font = pygame.font.Font(self.game.font_reg, 20)
 
         self.rect_origin = (0, 0)
         self.mouse_grid_position = (0, 0)
@@ -104,8 +105,8 @@ class GameScreen(Screen):
         self.grid_width = 600
         self.grid_height = 600
         self.grid_offset = self.game.center_coords(self.grid_width, self.grid_height)
-        self.num_rows = 6
-        self.num_columns = 6
+        self.num_rows = 10
+        self.num_columns = 10
         self.row_height = self.grid_height / self.num_rows
         self.column_width = self.grid_width / self.num_columns
 

@@ -70,8 +70,9 @@ class PuppysPen:
         self.py_screen.fill(color)
 
     def draw_text(self, text, pyfont=None, color=DARKGREY):
-        if not pyfont: pyfont = self.font
-        surface = pyfont.render(text, True, color)
+        #if not pyfont: pyfont = self.font
+        #surface = pyfont.render(text, True, color)
+        surface = pygame.font.Font(None, 36).render(text, True, color)
         pos = surface.get_rect()
         return surface, pos
 
