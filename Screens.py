@@ -91,7 +91,7 @@ class GameScreen(Screen):
         self.level_count = 0
         self.recent_levels.insert(self.level_count, self.area)
 
-        self.max_recent_levels = 1
+        self.max_recent_levels = 4
         self.matches_recent_level = False
         self.feedback_string = ""
 
@@ -264,21 +264,55 @@ class GameScreen(Screen):
         if self.level_count % 15 == 0:
             self.num_rows += 2
             self.num_columns += 2
-            self.row_height = self.grid_height / self.num_rows
-            self.column_width = self.grid_width / self.num_columns
 
         if self.level_count % 15 < 5:
-            self.level = Level(0, False, True, (self.num_rows, self.num_columns))
-            self.area = self.level.level
+            # Loop until you find a level that isn't the same as the previous max_recent_levels
+            while True:
+                self.matches_recent_level = False
+
+                # Generate new area level
+                self.level = Level(0, False, True, (self.num_rows, self.num_columns))
+                self.area = self.level.level
+
+                # Make sure it doesn't match any recent levels
+                for x in range(min(self.max_recent_levels, len(self.recent_levels))):
+                    if self.area == self.recent_levels[x]:
+                        self.matches_recent_level = True
+
+                if not self.matches_recent_level:
+                    self.recent_levels.insert(0, self.area)
+                    break
 
         elif self.level_count % 15 < 10:
-            self.level = Level(0, True, False, (self.num_rows, self.num_columns))
-            self.perimeter = self.level.level
+            while True:
+                self.matches_recent_level = False
+
+                self.level = Level(0, True, False, (self.num_rows, self.num_columns))
+                self.perimeter = self.level.level
+
+                for x in range(min(self.max_recent_levels, len(self.recent_levels))):
+                    if self.perimeter == self.recent_levels[x]:
+                        self.matches_recent_level = True
+
+                if not self.matches_recent_level:
+                    self.recent_levels.insert(0, self.perimeter)
+                    break
 
         else:
-            self.level = Level(0, True, True, (self.num_rows, self.num_columns))
-            self.area = self.level.level[0]
-            self.perimeter = int(self.level.level[1])
+            while True:
+                self.matches_recent_level = False
+
+                self.level = Level(0, True, True, (self.num_rows, self.num_columns))
+                self.area = self.level.level[0]
+                self.perimeter = int(self.level.level[1])
+
+                for x in range(min(self.max_recent_levels, len(self.recent_levels))):
+                    if self.area == self.recent_levels[x]:
+                        self.matches_recent_level = True
+
+                if not self.matches_recent_level:
+                    self.recent_levels.insert(0, self.area)
+                    break
 
     def level_failure(self, _feedback_text="Oops, try again :("):
         """ Gives feedback to the user about what went wrong on this attempt """
