@@ -13,7 +13,7 @@ from gi.repository import Gtk
 
 # pygame
 import pygame
-from pygame.locals import QUIT, MOUSEBUTTONUP, MOUSEMOTION, VIDEORESIZE, ACTIVEEVENT
+from pygame.locals import QUIT, MOUSEBUTTONUP, MOUSEBUTTONDOWN, MOUSEMOTION, VIDEORESIZE, ACTIVEEVENT
 
 # app
 import Constants
@@ -59,19 +59,10 @@ class PuppysPen:
         self.rect_origin = (0, 0)
         self.drawing_rect = False
 
-        #self.instruction_text_surface = self.font.render("Click once to start a rectangle, and again to finish it", True, (0, 0, 0))
-        #self.instruction_text_pos = self.instruction_text_surface.get_rect()
-        #self.instruction_text_pos.centerx = self.py_screen.get_rect().centerx
-
-        #self.level_text_surface = self.font.render("Make a rectangle with perimeter " + str(self.perimeter), True, (0, 0, 0))
-        #self.level_text_pos = self.level_text_surface.get_rect()
-        #self.level_text_pos.centerx = self.py_screen.get_rect().centerx
-        #self.level_text_pos.centery = self.py_screen.get_rect().centery - 300
-
     def update(self):
         self.draw_background()
 
-        self.instruction_text_surface, self.instruction_text_pos = self.draw_text("Click once to start a rectangle, and again to finish it")
+        self.instruction_text_surface, self.instruction_text_pos = self.draw_text("Click and drag to create a rectangle")
         self.instruction_text_pos.centerx = self.py_screen.get_rect().centerx
         self.instruction_text_pos.centery = self.py_screen.get_rect().centery - 385
         
@@ -392,6 +383,11 @@ class PuppysPen:
 
                         self.mouse_prev_grid_position = self.mouse_grid_position
 
+                elif event.type == MOUSEBUTTONDOWN:
+                    if event.button == 1 or event.button == 3:
+                        if not self.drawing_rect:
+                            self.begin_user_rectangle()
+
                 elif event.type == MOUSEBUTTONUP:
                     if event.button == 1 or event.button == 3:
                         #pos = pygame.mouse.get_pos()
@@ -404,8 +400,9 @@ class PuppysPen:
                             self.begin_user_rectangle()
 
                         else:
-                            # Finish drawing rectangle
-                            self.finish_user_rectangle()
+                            if not self.mouse_grid_position == self.rect_origin:
+                                # Finish drawing rectangle
+                                self.finish_user_rectangle()
 
                 elif event.type == QUIT:
                     self.running = False
