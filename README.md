@@ -67,9 +67,9 @@ Conatins game-wide constants
 
 Contributors
 ==========
-dropofwill - https://github.com/dropofwill
-kangareuben - https://github.com/kangareuben
-Lynxfive - https://github.com/Lynxfive
+- dropofwill - https://github.com/dropofwill
+- kangareuben - https://github.com/kangareuben
+- Lynxfive - https://github.com/Lynxfive
 
 License
 =======
