@@ -373,8 +373,9 @@ class GameScreen(Screen):
             # Start drawing rectangle
             self.begin_user_rectangle()
         else:
-            # Finish drawing rectangle
-            self.finish_user_rectangle()
+            if not self.mouse_grid_position == self.rect_origin:
+                # Finish drawing rectangle
+                self.finish_user_rectangle()
 
     def mouse_down(self, pos):
         if not self.drawing_rect:
@@ -382,7 +383,8 @@ class GameScreen(Screen):
             self.begin_user_rectangle()
         else:
             # Finish drawing rectangle
-            self.finish_user_rectangle()
+            # self.finish_user_rectangle()
+            pass
 
     def mouse_move(self, pos):
         mouse_x, mouse_y = self.get_offset_mouse(pos)
