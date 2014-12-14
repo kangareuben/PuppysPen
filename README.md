@@ -47,9 +47,11 @@ Base application taken from https://github.com/FOSSRIT/sugar-quickstart.
 
 Used https://github.com/brendanwhitfield/planetary as a guide for further application structure
 
-Main Puppy asset credit [Jackie Wiley](http://jlw6587.wix.com/portfolio)
+The Arvo font licensed under the [SIL Open Font License (OFL)](http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
 
-Other art assets credit [lynxfive](https://github.com/lynxfive)
+The Main puppy asset credit [Jackie Wiley](http://jlw6587.wix.com/portfolio)
+
+All other art assets credit [Cole Cooper (lynxfive)](https://github.com/lynxfive)
 
 [<img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />](http://creativecommons.org/licenses/by-sa/4.0/")
 
