@@ -8,16 +8,16 @@ A visual math game for 4th graders written in Python for the XO laptop.
 ### Requirements
 	Python 2.7
 	Pygame
+	Gtk
 
 How to Run
 =========
 
-Puppy's Pen can be played as a standalone pygame app.
+Puppy's Pen can be played as a standalone Pygame app.
 
 ### Running as Pygame App
 
-This game can be played as a desktop application. As long as python and pygame are installed, simply run Planetary.py to play and test. Please note, this method does NOT use any XO or sugargame components. This can only be done using Linux.
-
+This game can be played as a desktop application, but only on a machine with Gtk (we recommend using Linux). As long as Python, Pygame, and Gtk are installed, simply run PuppysPen.py to play and test. This does not create a Sugar Activity build, but it will still run on an XO the same way.
 
 
 File Explanations
