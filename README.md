@@ -3,6 +3,8 @@ PuppysPen
 
 A visual math game for 4th graders written in Python for the XO laptop.
 
+[Wiki for the project available on wiki.sugarlabs.org](http://wiki.sugarlabs.org/go/Puppy%27s_Pen)
+
 ### Requirements
 	Python 2.7
 	Pygame
@@ -20,9 +22,6 @@ This game can be played as a desktop application. As long as python and pygame a
 
 File Explanations
 =================
-
-<!--### activity.py (Entry point)-->
-
 
 ### PuppysPen.py (Pygame App)
 Manages the game state and data. Switches and interacts with screen objects
