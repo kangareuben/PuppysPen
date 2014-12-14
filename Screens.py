@@ -3,6 +3,7 @@ Where the two game states logic lives
 """
 # python
 import random
+import os
 
 # pygame
 import pygame
@@ -36,9 +37,11 @@ class MainScreen(Screen):
         super(MainScreen, self).__init__()
         self.py_screen = _py_screen
         self.game = _game
+        self.menu_img = pygame.image.load(os.path.join("resources", "background-edit.png"))
         self.button_list = []
 
     def update(self):
+        self.py_screen.blit(self.menu_img, (0,0))
         self.button_list.append(Button(self.game, (10, 10), 90, 25, "Start Game", self.game_event))
 
     def game_event(self):
@@ -118,7 +121,6 @@ class GameScreen(Screen):
         """ Starts drawing a user rectangle """
         self.drawing_rect = True
         self.rect_origin = self.mouse_grid_position
-
 
     def finish_user_rectangle(self):
         """ Stops drawing a user rectangle and calculates whether the rectangle met criteria """
@@ -277,12 +279,6 @@ class GameScreen(Screen):
         """ Returns a tuple (x,y) offset based on self.grid_offset """
         return (pos[0] - self.grid_offset[0], pos[1] - self.grid_offset[1])
 
-    # pre-merge
-    #def get_offset_mouse(self):
-        #""" Returns a tuple (x,y) offset based on self.grid_offset """
-        #pos = pygame.mouse.get_pos()
-        #return (pos[0] - self.grid_offset[0], pos[1] - self.grid_offset[1])
-
     def get_grid_mouse(self, pos):
         mouse_x, mouse_y = pos
 
@@ -320,45 +316,6 @@ class GameScreen(Screen):
             mouse_grid_position = (grid_x, 0)
         return mouse_grid_position
 
-    # pre-merge
-    #def get_grid_mouse(self, pos):
-        #mouse_x, mouse_y = pos
-
-        #if mouse_x <= 0 and mouse_y <= 0:
-            #mouse_grid_position = (0, 0)
-
-        #elif mouse_x > 0 and mouse_y > 0:
-            #grid_x = round(mouse_x / float(self.column_width))
-            #grid_y = round(mouse_y / float(self.row_height))
-            #mouse_grid_position = (grid_x, grid_y)
-
-            #if grid_x > self.num_columns:
-                #if grid_y > self.num_rows:
-                    #mouse_grid_position = (self.num_columns, self.num_rows)
-                #else:
-                    #mouse_grid_position = (self.num_columns, mouse_grid_position[1])
-
-            #if grid_y > self.num_rows:
-                #mouse_grid_position = (mouse_grid_position[0], self.num_rows)
-
-        #elif mouse_x <= 0:
-            #grid_y = round(mouse_y / self.row_height)
-
-            #if grid_y > self.num_rows:
-                #grid_y = self.num_rows
-
-            #mouse_grid_position = (0, grid_y)
-
-        #elif mouse_y <= 0:
-            #grid_x = round(mouse_x / self.column_width)
-
-            #if grid_x > self.num_columns:
-                #grid_x = self.num_columns
-
-            #mouse_grid_position = (grid_x, 0)
-
-        #return mouse_grid_position
-
     def update(self):
         self.instruction_text_surface, self.instruction_text_pos = \
             self.game.draw_text("Click and drag to create a rectangle")
@@ -372,7 +329,7 @@ class GameScreen(Screen):
             level_text = "Make a rectangle with perimeter " + str(self.perimeter)
         else:
             level_text = "Make a rectangle with area " + str(self.area) + \
-                         " and perimeter " + str(self.perimeter) 
+                         " and perimeter " + str(self.perimeter)
 
         self.level_text_surface, self.level_text_pos = \
             self.game.draw_text(level_text)
@@ -414,6 +371,9 @@ class GameScreen(Screen):
         if not self.drawing_rect:
             # Start drawing rectangle
             self.begin_user_rectangle()
+        else:
+            # Finish drawing rectangle
+            self.finish_user_rectangle()
 
     def mouse_move(self, pos):
         mouse_x, mouse_y = self.get_offset_mouse(pos)

@@ -7,6 +7,7 @@ Application structure taken from brendanwhitfield/planetary
 
 # python
 import random
+import os
 
 # gtk
 from gi.repository import Gtk
@@ -20,7 +21,6 @@ from Constants import HEIGHT, WIDTH, GREEN, DARKGREY, GREY, LIGHTGREY, MAROON
 from Screens import GameScreen, MainScreen
 
 class PuppysPen:
-
     # Runs before the game loop begins
     def __init__(self, _py_screen):
         self.running = True # controls the exit of the game loop
@@ -28,8 +28,8 @@ class PuppysPen:
         self.forceAll = False # force an entire repaint of the screen on the next frame
         #self.clicked = None # the ID of the object that was clicked
         self.py_screen = _py_screen
-        self.font_reg = "resources/Arvo-Regular.ttf"
-        self.font_bold = "resources/Arvo-Bold.ttf"
+        self.font_reg = os.path.join("resources", "Arvo-Regular.ttf")
+        self.font_bold = os.path.join("resources", "Arvo-Bold.ttf")
         self.font = pygame.font.Font(self.font_reg, 36)
         self.rect_origin = (0, 0)
         self.screen = None
@@ -43,7 +43,7 @@ class PuppysPen:
         # grass green
         self.py_screen.fill(color)
 
-    def draw_text(self, text, pyfont=None, color=(0,0,0)):
+    def draw_text(self, text, pyfont=None, color=DARKGREY):
         if not pyfont: pyfont = self.font
         surface = pyfont.render(text, True, color)
         pos = surface.get_rect()
@@ -57,7 +57,7 @@ class PuppysPen:
         return (x_padding, y_padding)
 
     def draw_rectangle(self, _x, _y, _width, _height):
-        pygame.draw.rect(self.py_screen, (255,255,255), (_x,_y,_width,_height), 1)
+        pygame.draw.rect(self.py_screen, DARKGREY, (_x,_y,_width,_height), 1)
 
     def switch_screen(self, screen):
         if screen.lower() == "main" or screen.lower() == "home":
@@ -78,7 +78,6 @@ class PuppysPen:
 
         # The main game loop.
         while self.running:
-
             # Should we be using the blit() method to draw things to the screen each frame?
             # If so, this seems like a good tutorial
             # https://www.pygame.org/docs/tut/tom/games2.html
