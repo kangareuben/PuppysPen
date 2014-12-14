@@ -37,15 +37,24 @@ class MainScreen(Screen):
         super(MainScreen, self).__init__()
         self.py_screen = _py_screen
         self.game = _game
+        self.first_time = True
         self.menu_img = pygame.image.load(os.path.join("resources", "background-edit.png"))
         self.button_list = []
+        print("called init")
 
     def update(self):
         self.py_screen.blit(self.menu_img, (0,0))
-        self.button_list.append(Button(self.game, (10, 10), 90, 25, "Start Game", self.game_event))
+        self.button_list.append(Button(self.game, (WIDTH - 200, 350), 90, 25, "Start New Game", self.new_game_event))
+
+        if not self.first_time:
+            self.button_list.append(Button(self.game, (WIDTH - 200, 300), 90, 25, "Resume Game", self.game_event))
+
+    def new_game_event(self):
+        print("Go to a new game screen")
+        self.game.switch_screen("game", True)
 
     def game_event(self):
-        print("Go Back to game screen")
+        print("Go back to game screen")
         self.game.switch_screen("game")
 
     def mouse_up(self, pos):
@@ -410,7 +419,7 @@ class Button():
         self.text = text
         self.handler = handler
 
-        self.font = pygame.font.Font("resources/Arvo-Regular.ttf", 14)
+        self.font = pygame.font.Font("resources/Arvo-Regular.ttf", 20)
         self.text_surface = self.font.render(text, True, DARKGREY)
         self.text_pos = self.text_surface.get_rect()
 
