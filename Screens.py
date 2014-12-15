@@ -92,6 +92,7 @@ class GameScreen(Screen):
         super(GameScreen, self).__init__()
         self.game = _game
         self.py_screen = _py_screen
+        self.num_font = pygame.font.Font(self.game.font_reg, 20)
 
         self.rect_origin = (0, 0)
         self.mouse_grid_position = (0, 0)
@@ -124,9 +125,9 @@ class GameScreen(Screen):
         self.column_width = float(self.grid_width) / float(self.num_columns)
 
         # Draw the 0 only once
-        num_font = pygame.font.Font(self.game.font_reg, 20)
+        #num_font = pygame.font.Font(self.game.font_reg, 20)
 
-        self.grid_number_text_surface, self.grid_number_text_pos = self.game.draw_text(str(0), num_font)
+        self.grid_number_text_surface, self.grid_number_text_pos = self.game.draw_text(str(0), self.num_font)
         self.grid_number_text_pos.centerx = self.grid_offset[0] - 13
         self.grid_number_text_pos.centery = self.grid_offset[1] - 13
         self.py_screen.blit(self.grid_number_text_surface, self.grid_number_text_pos)
@@ -136,7 +137,7 @@ class GameScreen(Screen):
 
             if i > 0:
                 # Draw grid numbers
-                self.grid_number_text_surface, self.grid_number_text_pos = self.game.draw_text(str(i), num_font)
+                self.grid_number_text_surface, self.grid_number_text_pos = self.game.draw_text(str(i), self.num_font)
                 self.grid_number_text_pos.centerx = i * self.column_width + self.grid_offset[0]
                 self.grid_number_text_pos.centery = self.grid_offset[1] - 14
                 self.py_screen.blit(self.grid_number_text_surface, self.grid_number_text_pos)
@@ -145,7 +146,7 @@ class GameScreen(Screen):
             self.game.draw_rectangle(self.grid_offset[0], j * self.row_height + self.grid_offset[1], self.grid_width, 1)
 
             if j > 0:
-                self.grid_number_text_surface, self.grid_number_text_pos = self.game.draw_text(str(j), num_font)
+                self.grid_number_text_surface, self.grid_number_text_pos = self.game.draw_text(str(j), self.num_font)
                 self.grid_number_text_pos.centerx = self.grid_offset[0] - 14
                 self.grid_number_text_pos.centery = j * self.row_height + self.grid_offset[1]
                 self.py_screen.blit(self.grid_number_text_surface, self.grid_number_text_pos)
@@ -479,7 +480,8 @@ class Button():
         self.text = text
         self.handler = handler
 
-        self.font = pygame.font.Font("resources/Arvo-Regular.ttf", 20)
+        #self.font = pygame.font.Font("resources/Arvo-Regular.ttf", 20)
+        self.font = pygame.font.Font(None, 30)
         self.text_surface = self.font.render(text, True, DARKGREY)
         self.text_pos = self.text_surface.get_rect()
 
